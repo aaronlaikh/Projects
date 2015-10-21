@@ -1,0 +1,4 @@
+set 1, 1 + 4
+set 0, 1+40*2/10
+set write, D[0]+D[1]
+halt
