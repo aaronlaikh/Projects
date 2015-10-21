@@ -35,11 +35,6 @@ class Lexor:
 			return self.data[self.index+1]
 		except IndexError:
 			return ''
-		
-	def jump(self, ind):
-                self.index = ind - 1
-                return next()
-                
 	
 def parseProgram(inputFile):
         """
@@ -55,7 +50,7 @@ def parseStatements(inputFile):
         Create a Lexor object, that grabs and calls to parse next statement
         if another statement exists.
         """
-        global lex = Lexor(inputFile)
+        lex = Lexor(inputFile)
         while lex.peek() != '':
                 parseStmt(lex.next())
 	
@@ -120,11 +115,7 @@ def parseExpr(cmds):
         if type(cmds) == str:
                 delimit = "[+|-]+"
                 terms = re.split(delimit, cmds)
-                if '+' in cmds:
-                        return int(parseTerms(terms[0]) + parseTerms(terms[1]))
-                elif '-' in cmds:
-                        return int(parseTerms(terms[0]) - parseTerms(terms[1]))
-        #parseTerms(terms)
+        parseTerms(terms)
                 
 def parseTerms(cmds):
         """
@@ -133,13 +124,7 @@ def parseTerms(cmds):
         if len(cmds) != 0:
                 print("Term")
                 delimit = "[*|/|%]+"
-                factors = re.split(delimit, cmds[0], 1)
-                if '*' in cmds:
-                        return parseFactors(cmds)
-                elif '/' in cmds:
-                        pass
-                elif '%' in cmds:
-                        pass
+                factors = re.split(delimit, cmds[0])
                 parseFactors(cmds[0])
                 parseTerms(cmds[1:])
 
@@ -170,9 +155,8 @@ def parseJump(cmds):
         jump <Expr>
         """
         if (len(cmds) != 0):
-                #parseExpr(cmds[0])
-                #parseJump(cmds[1:])
-                lex.jump(parseExpr(cmds[0]))
+                parseExpr(cmds[0])
+                parseJump(cmds[1:])
         
 def parseJumpt(cmds):
         """

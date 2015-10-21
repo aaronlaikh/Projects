@@ -1,0 +1,6 @@
+set 1, 20
+set 2, 10
+jumpt 4, D[1] >= D[2]
+set write, 20
+set write, 5
+halt

@@ -1,0 +1,5 @@
+set write, 1
+set write, 1+1
+set write, 1*2
+set write, 2*2+(4+1)
+halt

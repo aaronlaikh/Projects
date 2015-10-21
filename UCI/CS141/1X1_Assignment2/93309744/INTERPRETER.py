@@ -1,215 +1,109 @@
 import sys
-import string
-import re
+from tokenizer import Tokenizer
 
-class Lexor:
-	index = -1
-	"""
-                Initialize Lexor by calling to save file data to itself.
-        """
-	def __init__(self, inputFile):
-		self.filename = inputFile
-		self.openFile()
-	"""
-                Open input file, read() to get all text data, then
-                split by each line.
-                Splits are done on \r\n, \t\n, and \n.
-        """
-	def openFile(self):
-		with open(self.filename) as stmts:
-			delimiters = "[\r\n|\t\n|\n]+"
-			self.data = re.split(delimiters, stmts.read())
-	"""
-                Advance to the next token (next line/statement).
-        """
-	def next(self):
-		self.index += 1
-		info = self.data[self.index]
-		return info
-	"""
-                Look at next token, but don't advance.
-                If there is no other token, return empty string.
-        """
-	def peek(self):
-		try:
-			return self.data[self.index+1]
-		except IndexError:
-			return ''
-		
-	def jump(self, ind):
-                self.index = ind - 1
-                return next()
-                
-	
-def parseProgram(inputFile):
-        """
-        Begin the program.
-        Sends input filepath to parseStatments to create Lexor.
-        """
-        print("Program")
-        parseStatements(inputFile)
+class Interpreter:
+    def __init__(self, codefile, infile):
+        DATA_SEG_SIZE = 100
 
-def parseStatements(inputFile):
-        """
-        Parse statements.
-        Create a Lexor object, that grabs and calls to parse next statement
-        if another statement exists.
-        """
-        global lex = Lexor(inputFile)
-        while lex.peek() != '':
-                parseStmt(lex.next())
-	
-def parseStmt(line):
-        """
-        Parse the instruction of the statement.
-        If 's', then Set.  if 'h', then Halt.
-        If 'j', and 6th index is ' ', then jumpt.
-        If 'j', and 6th index is not ' ', then jump.
-        Else, print invalid operation.
-        For each case, statement is split using ',' as delimiter.
-        whitespace ignored, will be stripped further down.
-        """
-        print("Statement")
-        index=0
-        if line[0] == 's':
-                print("Set")
+        outfile = "{0}.out2".format(codefile)
+        self.D = [0 for i in range(DATA_SEG_SIZE)]
+        self.PC = 0
+        self.input_tokens = iter(open(infile, 'r').read().split('\n'))
+        self.outhandle = open(outfile, 'w')
+        self.IR=''
+        self.run_bit = True
+
+        with open(codefile, 'r') as fread:
+            self.C = fread.read().split('\n')
+
+    def runProgram(self):
+        #while self.run_bit:
+        rest = self.fetch()
+        for i in rest:
+            print(i)
+        self.incrementPC()
+        pass
+
+    def fetch(self):
+        line = self.C[self.PC]
+        index = 0
+        if line[0] in 'sS':
+                self.IR = "set"
                 index += 4
-                rest = line[index:]
-                cmds = str.split(rest, ',')
-                parseSet(cmds)
-        elif line[0] == 'h':
-                exit()
-        elif line[0] == 'j':
+        elif line[0] in 'hH':
+                self.IR = "halt"
+        elif line[0] in 'jJ':
                 index += 5
                 if line[index] == ' ':
-                        print("Jumpt")
+                        self.IR = "jumpt"
                         index += 1
-                        rest = line[index:]
-                        cmds = str.split(rest, ',')
-                        parseJumpt(cmds)
                 else:
-                        print("Jump")
-                        rest = line[index:]
-                        cmds = str.split(rest, ',')
-                        parseJump(cmds)
+                        self.IR = "jump"
         else:
                 print("Invalid Operation")
+        rest = line[index:]
+        cmds = str.split(rest, ',')
+        for i in range(len(cmds)):
+            cmds[i] = str.strip(cmds[i])
+        return cmds
 
-	
-def parseSet(cmds):
-        """
-        parse Set command.
-        set (write|<Expr>), (read|<Expr>)
-        """
-        if len(cmds) != 0:
-                first = str.strip(cmds[0])
-                if first[0] == 'w':
-                        pass
-                elif first[0] == 'r':
-                        pass
-                else:
-                        parseExpr(first)
-                parseSet(cmds[1:])
-
-def parseExpr(cmds):
-        """
-        Parse expressions.
-        <Term> {(+|-)<Term>}
-        """
-        print("Expr")
-        if type(cmds) == str:
-                delimit = "[+|-]+"
-                terms = re.split(delimit, cmds)
-                if '+' in cmds:
-                        return int(parseTerms(terms[0]) + parseTerms(terms[1]))
-                elif '-' in cmds:
-                        return int(parseTerms(terms[0]) - parseTerms(terms[1]))
-        #parseTerms(terms)
-                
-def parseTerms(cmds):
-        """
-        Parse terms. <Factor> {(*|/|%) <Factor>}.
-        """
-        if len(cmds) != 0:
-                print("Term")
-                delimit = "[*|/|%]+"
-                factors = re.split(delimit, cmds[0], 1)
-                if '*' in cmds:
-                        return parseFactors(cmds)
-                elif '/' in cmds:
-                        pass
-                elif '%' in cmds:
-                        pass
-                parseFactors(cmds[0])
-                parseTerms(cmds[1:])
-
-def parseFactors(cmds):
-        """
-        parseFactors assumes that D[_] and (_) can be expressions.
-        This handles this case appropriately by parsing Expr.
-        <Number> | D[<Expr>] | (<Expr>)
-        """
-        print("Factor")
-        if cmds[0] == 'D':
-                parseExpr(cmds[2:len(cmds)-1])
-        elif cmds[0] == '(':
-                parseExpr(cmds[1:len(cmds)-1])
-        else:
-                parseNumber(cmds)
-
-def parseNumber(cmds):
-        """
-        Parse numbers.
-        0|(1...9){0...9}
-        """
-        print("Number")
+    def incrementPC(self):
+        self.PC = self.PC + 1
         
-def parseJump(cmds):
-        """
-        Parse Jump command.
-        jump <Expr>
-        """
-        if (len(cmds) != 0):
-                #parseExpr(cmds[0])
-                #parseJump(cmds[1:])
-                lex.jump(parseExpr(cmds[0]))
-        
-def parseJumpt(cmds):
-        """
-        Parse jumpt command.
-        jumpt <Expr>, <Expr> (!= | == | > | < | >= | <=)<Expr>
-        Code is duplicated in if-else checking.  Can refactor
-        to a helper funciton that returns the correctly splitted array.
-        """
-        if (len(cmds) > 0):
-                first = str.strip(cmds[0])
-                if '==' in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                elif '!=' in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                elif '>=' in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                elif '<=' in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                elif '>'  in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                elif '<' in first:
-                        cmds2 = re.split("[==|!=|>=|<=|>|<]+", first)
-                        cmds[0] = cmds2[0]
-                        cmds.append(str.strip(cmds2[1]))
-                parseExpr(cmds[0])
-                parseJumpt(cmds[1:])
-	
-if __name__ == '__main__':
-        #Run the program.  argv[1] MUST be the input filepath.
-	parseProgram(sys.argv[1])
+    def execute(self):
+        pass
+
+    # interpretting grammar
+    def interpretStatement(self):
+        tokens = Tokenizer(self.IR)
+        # YOUR CODE HERE
+        pass
+
+    def interpretJump(self, tokens):
+        value = self.interpretExpr(tokens)
+        return value
+
+    def interpretJumpt(self, tokens):
+        pass
+
+    def interpretExpr(self, tokens):
+        pass
+
+    def halt(tokens):
+        self.run_bit = False
+
+    def printDataSeg(self):
+        # DO NOT CHANGE
+        self.outhandle.write("Data Segment Contents\n")
+        for i in range(len(self.D)):
+            self.outhandle.write('{0}: {1}\n'.format(i, self.D[i]))
+
+    # read in value from file
+    # DO NOT CHANGE
+    def read(self):
+        return self.input_tokens.next()
+
+    # write out the file
+    # DO NOT CHANGE
+    def write(self, value):
+        self.outhandle.write('{0}\n'.format(value))
+
+def main():
+    if len(sys.argv) != 3:
+        print("Wrong usage: python interpreter.py <programfile> <inputfile>")
+        sys.exit(0)
+
+    codepath = sys.argv[1]
+    inputpath = sys.argv[2]
+
+    # init the interpreter
+    interpreter = Interpreter(codepath, inputpath)
+
+    # running the program
+    interpreter.runProgram()
+
+    # print out the data segment
+    interpreter.printDataSeg()
+
+if __name__ == "__main__":
+    main()
