@@ -18,15 +18,15 @@ class Interpreter:
 
     def runProgram(self):
         #while self.run_bit:
-        rest = self.fetch()
-        for i in rest:
-            print(i)
+        self.fetch()
+        self.execute()
         self.incrementPC()
         pass
 
     def fetch(self):
         line = self.C[self.PC]
-        index = 0
+        self.IR = line
+        """index = 0
         if line[0] in 'sS':
                 self.IR = "set"
                 index += 4
@@ -45,29 +45,42 @@ class Interpreter:
         cmds = str.split(rest, ',')
         for i in range(len(cmds)):
             cmds[i] = str.strip(cmds[i])
-        return cmds
+        return cmds"""
 
     def incrementPC(self):
         self.PC = self.PC + 1
         
     def execute(self):
-        pass
-
+        self.interpretStatement()
+        
     # interpretting grammar
     def interpretStatement(self):
         tokens = Tokenizer(self.IR)
         # YOUR CODE HERE
-        pass
+        instr = tokens.next().lower()
+        if instr[0] == 's':
+            #if instr[4] == ' ':
+                #self.interpretJump(tokens)
+            #elif instr[4] == 't':
+            if self.interpretJumpt(tokens) == True:
+                pass
+                    #Change PC to jump local
+            
 
-    def interpretJump(self, tokens):
+    def interpretJumpt(self, tokens):
+        while tokens.peek() is not None:
+            print(tokens.next())
         value = self.interpretExpr(tokens)
         return value
 
-    def interpretJumpt(self, tokens):
+    def interpretJump(self, tokens):
         pass
 
     def interpretExpr(self, tokens):
-        pass
+        while tokens.peek() is not None:
+            nextToken = tokens.next()
+            if nextToken == ',':
+                break
 
     def halt(tokens):
         self.run_bit = False
