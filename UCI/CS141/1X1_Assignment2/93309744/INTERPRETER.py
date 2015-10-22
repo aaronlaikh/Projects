@@ -1,4 +1,5 @@
 import sys
+import re
 from tokenizer import Tokenizer
 
 class Interpreter:
@@ -8,7 +9,7 @@ class Interpreter:
         outfile = "{0}.out2".format(codefile)
         self.D = [0 for i in range(DATA_SEG_SIZE)]
         self.PC = 0
-        self.input_tokens = iter(open(infile, 'r').read().split('\n'))
+        self.input_tokens = iter(open(infile,'r').read().split('\n'))
         self.outhandle = open(outfile, 'w')
         self.IR=''
         self.run_bit = True
@@ -17,35 +18,15 @@ class Interpreter:
             self.C = fread.read().split('\n')
 
     def runProgram(self):
-        #while self.run_bit:
-        self.fetch()
-        self.execute()
-        self.incrementPC()
+        while self.run_bit:
+            self.fetch()
+            self.incrementPC()
+            self.execute()
         pass
 
     def fetch(self):
         line = self.C[self.PC]
         self.IR = line
-        """index = 0
-        if line[0] in 'sS':
-                self.IR = "set"
-                index += 4
-        elif line[0] in 'hH':
-                self.IR = "halt"
-        elif line[0] in 'jJ':
-                index += 5
-                if line[index] == ' ':
-                        self.IR = "jumpt"
-                        index += 1
-                else:
-                        self.IR = "jump"
-        else:
-                print("Invalid Operation")
-        rest = line[index:]
-        cmds = str.split(rest, ',')
-        for i in range(len(cmds)):
-            cmds[i] = str.strip(cmds[i])
-        return cmds"""
 
     def incrementPC(self):
         self.PC = self.PC + 1
@@ -56,33 +37,137 @@ class Interpreter:
     # interpretting grammar
     def interpretStatement(self):
         tokens = Tokenizer(self.IR)
-        # YOUR CODE HERE
         instr = tokens.next().lower()
+        stmt = ""
+        while tokens.peek() is not None:
+            stmt += tokens.next()
         if instr[0] == 's':
-            #if instr[4] == ' ':
-                #self.interpretJump(tokens)
-            #elif instr[4] == 't':
-            if self.interpretJumpt(tokens) == True:
-                pass
-                    #Change PC to jump local
+            self.interpretSet(stmt)
+        elif instr[0] == 'j':
+            if len(instr) == 5:
+                self.interpretJumpt(stmt)
+            elif len(instr) == 4:
+                self.interpretJump(stmt)
+        elif instr[0] == 'h':
+            self.halt(tokens)
             
+    def interpretSet(self, stmt):
+        split = str.split(stmt, ',')
+        dest = None
+        src = None
+        if split[1][0] == 'r':
+            src = self.read()
+        else:
+            src = self.interpretExpr(split[1])
+            
+        if split[0][0] == 'w':
+            self.write(src)
+        else:
+            dest = self.interpretExpr(split[0])
+            self.D[dest] = src
+    
+    def interpretJumpt(self, stmt):
+        split = str.split(stmt, ',')
+        dest = self.interpretExpr(split[0])
+        boolCondition = False
+        conds = []
+        if "==" in split[1]:
+            conds = str.split(split[1], "==")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 == cond2
+        elif "!=" in split[1]:
+            conds = str.split(split[1], "!=")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 != cond2
+        elif ">=" in split[1]:
+            conds = str.split(split[1], ">=")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 >= cond2
+        elif "<=" in split[1]:
+            conds = str.split(split[1], "<=")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 <= cond2
+        elif "<" in split[1]:
+            conds = str.split(split[1], "<")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 < cond2
+        elif ">" in split[1]:
+            conds = str.split(split[1], ">")
+            cond1 = self.interpretExpr(conds[0])
+            cond2 = self.interpretExpr(conds[1])
+            boolCondition = cond1 > cond2
+        if boolCondition:
+            self.PC = dest
 
-    def interpretJumpt(self, tokens):
-        while tokens.peek() is not None:
-            print(tokens.next())
-        value = self.interpretExpr(tokens)
-        return value
+    def interpretJump(self, stmt):
+        dest = self.interpretExpr(stmt)
+        self.PC = dest
 
-    def interpretJump(self, tokens):
-        pass
+    def interpretExpr(self, expr):
+        add = True
+        exprsum = 0
+        if "-" in expr:
+            add = False
+        split = re.split("[+|-]+", expr, 1)
+        exprsum = self.interpretTerms(split[0])
+        if len(split) > 1:
+            if add == True:
+                exprsum += self.interpretExpr(split[1])
+            else:
+                exprsum -= self.interpretExpr(split[1])
+        return exprsum
+    
+    def interpretTerms(self, terms):
+        op = False
+        sign = 0
+        prod = 0
+        if "*" in terms:
+            op = True
+            sign = 0
+        elif "/" in terms:
+            op = True
+            sign = 1
+        elif "%" in terms:
+            op = True
+            sign = 2
+        split = re.split("[*|/|%]+", terms, 1)
+        prod = self.interpretFactors(split[0])
+        if len(split) > 1:
+            if  op == True:
+                if sign == 0:
+                    prod = prod * self.interpretFactors(split[1])
+                elif sign == 1:
+                    prod = prod / self.interpretFactors(split[1])
+                elif sign == 2:
+                    prod = prod % self.interpretFactors(split[1])
+        return prod
 
-    def interpretExpr(self, tokens):
-        while tokens.peek() is not None:
-            nextToken = tokens.next()
-            if nextToken == ',':
-                break
+    def interpretFactors(self, factors):
+        num = 0
+        if factors[0] == "D" and factors[1] == "[":
+            newExpr = factors[2:len(factors)-1]
+            num = self.D[self.interpretExpr(newExpr)]
+        elif factors[0] == "(":
+            newExpr = factors[1:len(factors)-1]
+            num = self.interpretExpr(newExpr)
+        else:
+            num = self.interpretNumbers(factors)
+        return int(num)
 
-    def halt(tokens):
+    def interpretNumbers(self, numbers):
+        num = 0
+        try:
+            num = int(numbers)
+        except:
+            num = 0
+        return num
+    
+    def halt(self,tokens):
         self.run_bit = False
 
     def printDataSeg(self):
@@ -94,7 +179,8 @@ class Interpreter:
     # read in value from file
     # DO NOT CHANGE
     def read(self):
-        return self.input_tokens.next()
+        #return self.input_tokens.next()
+        return next(self.input_tokens)
 
     # write out the file
     # DO NOT CHANGE
