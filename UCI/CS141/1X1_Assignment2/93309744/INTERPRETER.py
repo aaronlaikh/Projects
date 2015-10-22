@@ -126,16 +126,31 @@ class Interpreter:
         op = False
         sign = 0
         prod = 0
+        startIndex = 0
+        closeIndex = 0
+        paren = False
+        temp=""
+        if "(" in terms:
+            startIndex = terms.find("(")
+            closeIndex = terms.rfind(")")
+            paren = True
+            temp = terms[startIndex+1:closeIndex]
+            terms = terms.replace(temp, "")
         if "*" in terms:
-            op = True
-            sign = 0
+                op = True
+                sign = 0
         elif "/" in terms:
-            op = True
-            sign = 1
+                op = True
+                sign = 1
         elif "%" in terms:
-            op = True
-            sign = 2
+                op = True
+                sign = 2
         split = re.split("[*|/|%]+", terms, 1)
+        for i in range(len(split)):
+            strings = split[i]
+            if "(" in strings:
+                parenindex = strings.find("(")
+                split[i] = strings[:parenindex+1] + temp + strings[parenindex+1:]
         prod = self.interpretFactors(split[0])
         if len(split) > 1:
             if  op == True:
