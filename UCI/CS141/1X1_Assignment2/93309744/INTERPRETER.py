@@ -6,7 +6,7 @@ class Interpreter:
     def __init__(self, codefile, infile):
         DATA_SEG_SIZE = 100
 
-        outfile = "{0}.out2".format(codefile)
+        outfile = "{0}.out".format(codefile)
         self.D = [0 for i in range(DATA_SEG_SIZE)]
         self.PC = 0
         self.input_tokens = iter(open(infile,'r').read().split('\n'))
@@ -160,7 +160,7 @@ class Interpreter:
                     prod = prod / self.interpretFactors(split[1])
                 elif sign == 2:
                     prod = prod % self.interpretFactors(split[1])
-        return prod
+        return int(prod)
 
     def interpretFactors(self, factors):
         num = 0
