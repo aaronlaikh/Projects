@@ -1,0 +1,17 @@
+set 0, 0
+set 1, 0
+set 0, read
+set 1, read
+set 2, 4
+jump 9
+set write, D[0]
+halt
+jumpt 10, D[0] != D[1]
+jump 16
+jumpt 13, D[0] > D[1]
+set 1, D[1] - D[0]
+jump 15
+set 0, D[0] - D[1]
+jump 15
+jump 9
+jump D[2]

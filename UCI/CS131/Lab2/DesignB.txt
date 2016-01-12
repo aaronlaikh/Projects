@@ -1,0 +1,21 @@
+/* Aaron Lai
+* ID 93309744
+* UCINetID: laiak
+* DesignB.txt, Lab 2
+* CS131 Spring 2015
+*/
+
+function my_barrier()
+{
+	if (rank = 0) // it is the root
+	{
+		block until received n-1 notifications
+		send confirmation to all other nodes
+	}
+	else //it is a slave process
+	{
+		send specific message to root that it has reached barrier
+		block until received notification from root 
+	}
+	exit
+}

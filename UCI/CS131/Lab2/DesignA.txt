@@ -1,0 +1,29 @@
+/* Aaron Lai
+* ID 93309744
+* UCINetID: laiak
+* DesignA.txt, Lab 2
+* CS131 Spring 2015
+*/
+
+open file to get NT, NS, input array
+slice array using indexes
+
+start timer MPI_WTime()
+MPI_Init()
+if (root process)
+{
+	send slice i to process i with MPI_Scatter(...)
+	search slice distributed to root
+	
+	collect results from other slaves
+	print output
+	stop timer
+}
+else slave process
+{
+	receive slice i
+	search slice distributed to slave
+	
+	send result to root 
+}
+MPI_Finalize()

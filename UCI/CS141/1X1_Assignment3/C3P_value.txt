@@ -1,0 +1,32 @@
+set 2, write
+set 1, D[1] + 1
+set D[1], 7
+set D[1]+1, D[0]
+set 0, D[1]
+set 1, D[1]+4
+set D[0]+2, D[2]
+jump 9
+halt
+set D[0]+3, 0
+jumpt 28, D[D[0]+2]<=2
+set 1, D[1]+1
+set D[1], 17
+set D[1]+1, D[0]
+set 0, D[1]
+set 1, D[1]+4
+set D[0]+2, D[D[0]+2]-2
+jump 9
+set D[0] + 3, D[D[1]-1]
+set 1, D[1]+1
+set D[1], 25
+set D[1]+1,D[0]
+set 0, D[1]
+set 1, D[1]+4
+set D[0]+2,D[D[0]+2]-1
+jump 9
+set D[0]-1, D[D[1]-1] + D[D[0]+3]
+jump 29
+set D[0]-1,1
+set 1, D[0]-1
+set 0, D[D[0]+1]
+jump D[D[1]]

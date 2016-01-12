@@ -1,0 +1,19 @@
+Calling Sequence:
+//This assumes one parameter.
+For more parameters, set D[0]+3, D[0]+4....
+to the other parameters before handing control
+over to the function.
+
+set 1, D[1]+1
+set D[1], ip+4
+set D[1]+1, D[0]
+set 0, D[1]
+set 1, D[1] + size(AR)
+set D[0]+2, param
+jump start_address
+
+Return sequence:
+set D[0]-1, return value
+set 1, D[0] -1
+set 0, D[D[0]+1]
+jump D[D[1]]

@@ -1,0 +1,13 @@
+jumpt 4, (case 1)
+jumpt 6, (case 2)
+jumpt 8, (case 3)
+jumpt 10, (default)
+(case 1:) do stuff
+jump 12
+(case 2:) do stuff
+jump 12
+(case 3:) do stuff
+jump 12
+(case default:) do stuff
+jump 12
+halt
