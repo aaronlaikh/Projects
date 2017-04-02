@@ -1,0 +1,147 @@
+
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.sql.*;
+import java.io.*;
+import java.net.*;
+import java.text.*;
+import java.util.ArrayList;
+import javax.sql.DataSource;
+import java.io.PrintWriter;
+import java.sql.DriverManager;
+import javax.naming.InitialContext;
+import javax.naming.Context;
+
+/**
+ * Servlet implementation class searchServlet
+ */
+@WebServlet("/searchServlet")
+public class searchServlet extends HttpServlet {
+	
+	private static Connection connection;
+       
+    public searchServlet() {	
+        super();
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		
+		try {
+			
+			Class.forName("com.mysql.jdbc.Driver").newInstance();	
+			String username = "testuser";
+			String password = "testpass";
+			connection = DriverManager.getConnection("jdbc:mysql:///moviedb?useAffectedRows=true", username, password);
+
+			String firstname = request.getParameter("fName");
+			if (firstname == null)
+				firstname = "";
+			String lastname = request.getParameter("lName");
+				if (lastname == null)
+					lastname = "";
+			String title = request.getParameter("title");
+				if (title == null)
+					title = "";
+			String director = request.getParameter("director");
+				if (director == null)
+					director = "";
+			String year = request.getParameter("year");
+				if (year == null)
+					year = "";	
+			String order = "title";
+			String findYear;
+			if (year == "")
+				findYear = "year > 0";
+			else
+				findYear = "year = " + year;
+			
+			String query = "select distinct "
+				+ "stars_in_movies.star_id, stars_in_movies.movie_id, title, year, director, genres.name as genre, banner_url, trailer_url, first_name, last_name, dob, photo_url "
+				+ "from stars inner join stars_in_movies on stars.id = stars_in_movies.star_id "
+				+ "join movies on stars_in_movies.movie_id = movies.id "
+				+ "join genres_in_movies on genres_in_movies.movie_id = movies.id "
+				+ "join genres on genres_in_movies.genre_id = genres.id";
+			
+			query = "select pr.* from (" + query + ") as pr where first_name like '%" + firstname + "%'";
+			query = "select ps.* from (" + query + ") as ps where last_name like '%" + lastname + "%'";
+			query = "select pt.* from (" + query + ") as pt where title like '%" + title + "%'";
+			query = "select qr.* from (" + query + ") as qr where director like '%" + director + "%'";
+			query = "select qs.* from (" + query + ") as qs where " + findYear;
+			query += " order by " + order;
+			
+			Statement stmt = connection.createStatement();			
+			ResultSet rs = stmt.executeQuery(query);
+			ArrayList<MovieObject> movieObjects = new ArrayList<MovieObject>();
+			while(rs.next())
+			{
+				boolean foundFlag = false;
+				boolean snFlag = false;
+				boolean sidFlag = false;
+				boolean genFlag = false;
+				int mov_id = rs.getInt("movie_id");
+				String m_title = rs.getString("title");
+				int m_year = rs.getInt("year");
+				String m_director = rs.getString("director");
+				String m_fn = rs.getString("first_name");
+				String m_ln = rs.getString("last_name");
+				int star_id = rs.getInt("star_id");
+				String genre = rs.getString("genre");
+				
+				for (int i = 0; i < movieObjects.size(); i++)
+				{
+					if (movieObjects.get(i).getId() == mov_id)
+					{
+						for (String sn : movieObjects.get(i).getStarNames())
+							if (sn.equals(m_fn + " " + m_ln))
+								snFlag = true;
+						for (int sid : movieObjects.get(i).getStarIds())
+							if (sid == star_id)
+								sidFlag = true;
+						for (String gen : movieObjects.get(i).getGenres())
+							if (gen.equals(genre))
+								genFlag = true;
+						if (!snFlag)
+							movieObjects.get(i).addStarName(m_fn + " " + m_ln);
+						if (!sidFlag)
+							movieObjects.get(i).addStarId(star_id);
+						if (!genFlag)
+							movieObjects.get(i).addGenre(genre);
+						foundFlag = true;
+					}
+				}
+				if (!foundFlag)
+				{
+					movieObjects.add(new MovieObject(mov_id, m_title, m_year, m_director));
+					movieObjects.get(movieObjects.size() -1).addStarName(m_fn + " " + m_ln);
+					movieObjects.get(movieObjects.size() -1).addStarId(star_id);
+					movieObjects.get(movieObjects.size() -1).addGenre(genre);
+				}
+			}
+			rs.close();
+			stmt.close();
+			connection.close();
+			
+			request.getSession().setAttribute("movieObjects", movieObjects);
+			response.sendRedirect("movielist?page=1");
+		}
+		catch (Exception e)
+		{
+			out.println("<div color='#ff0000'>Could not complete query.</div>");
+			e.printStackTrace();
+		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}

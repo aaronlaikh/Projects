@@ -1,0 +1,79 @@
+
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.PrintWriter;
+
+/**
+ * Servlet implementation class searchServlet
+ */
+@WebServlet("/searchServlet")
+public class searchServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public searchServlet() {	
+        super();
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();	
+		String username = "testuser";
+		String password = "testpass";
+		Connection connection;		
+		
+		String firstname = request.getParameter("fName");
+		if (firstname == null)
+			firstname = "";
+		String lastname = request.getParameter("lName");
+			if (lastname == null)
+				lastname = "";
+		String title = request.getParameter("title");
+			if (title == null)
+				title = "";
+		String director = request.getParameter("director");
+			if (director == null)
+				director = "";
+		String year = request.getParameter("year");
+			if (year == null)
+				year = "";	
+		String order = "title";
+		String findYear;
+		if (year == "")
+			findYear = "year > 0";
+		else
+			findYear = "year = " + year;
+		
+		String query = "select distinct "
+			+ "stars_in_movies.star_id, stars_in_movies.movie_id, title, year, director, genres.name as genre, banner_url, trailer_url, first_name, last_name, dob, photo_url "
+			+ "from stars inner join stars_in_movies on stars.id = stars_in_movies.star_id "
+			+ "join movies on stars_in_movies.movie_id = movies.id "
+			+ "join genres_in_movies on genres_in_movies.movie_id = movies.id "
+			+ "join genres on genres_in_movies.genre_id = genres.id";
+		
+		query = "select pr.* from (" + query + ") as pr where first_name like '%" + firstname + "%'";
+		query = "select ps.* from (" + query + ") as ps where last_name like '%" + lastname + "%'";
+		query = "select pt.* from (" + query + ") as pt where title like '%" + title + "%'";
+		query = "select qr.* from (" + query + ") as qr where director like '%" + director + "%'";
+		query = "select qs.* from (" + query + ") as qs where " + findYear;
+		query += " order by " + order;
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}

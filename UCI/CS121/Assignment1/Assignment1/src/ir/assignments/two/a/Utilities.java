@@ -124,7 +124,7 @@ public class Utilities {
          List<Frequency> frequencies = new ArrayList<Frequency>();
          for (int i = 0; i < tokens.size(); i++)
          {
-            frequencies.add(new Frequency(tokens.get(i), i));
+            frequencies.add(new Frequency(tokens.get(i), 1));
          }
          printFrequencies(frequencies);
       }

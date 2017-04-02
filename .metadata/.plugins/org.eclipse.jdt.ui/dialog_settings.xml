@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item value="D:\Users\Aaron\Documents\Projects\Projects\UCI\CS122B\Project1\bin" key="org.eclipse.jdt.ui.lastextjar"/>
-	<item value="D:\Users\Aaron\Documents\Projects\Projects\UCI\CS122B\Project1" key="org.eclipse.jdt.ui.last.external.project"/>
+	<item value="D:\Program Files\Apache Software Foundation\Tomcat 8.0\webapps\fabflix\WEB-INF\lib" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="C:\Users\Aaron\Documents\cs121_2" key="org.eclipse.jdt.ui.last.external.project"/>
 	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
 		<item value="2" key="layout"/>
 		<item value="true" key="group_libraries"/>
@@ -19,7 +19,10 @@
 	<section name="quick_assist_proposal_size">
 	</section>
 	<section name="BuildPathsPropertyPage">
-		<item value="2" key="pageIndex"/>
+		<item value="0" key="pageIndex"/>
+	</section>
+	<section name="NewPackageWizardPage">
+		<item value="false" key="create_package_info_java"/>
 	</section>
 	<section name="completion_proposal_size">
 	</section>

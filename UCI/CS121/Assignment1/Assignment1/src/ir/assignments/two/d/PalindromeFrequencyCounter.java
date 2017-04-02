@@ -184,7 +184,7 @@ public class PalindromeFrequencyCounter {
    {
       try
       {
-		File file = new File("D:/Users/Aaron/Documents/Projects/Projects/UCI/CS121/Assignment1/Assignment1/palindromes.txt");//args[0]);
+		File file = new File(args[0]);
 		ArrayList<String> words = Utilities.tokenizeFile(file);
 		List<Frequency> frequencies = computePalindromeFrequencies(words);
 		Utilities.printFrequencies(frequencies);
