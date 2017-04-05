@@ -1,0 +1,59 @@
+
+
+import java.io.IOException;
+
+import java.sql.*;
+import javax.sql.*;
+import java.io.IOException;
+import javax.servlet.http.*;
+import javax.servlet.*;
+import java.util.ArrayList;
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.sql.DataSource;
+
+public class starServlet extends HttpServlet {
+
+       
+    public starServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			Context initCtx = new InitialContext();
+            if (initCtx == null) out.println ("initCtx is NULL");
+		   
+	        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null) out.println ("envCtx is NULL");
+			
+	        // Look up our data source
+	        DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedbpool");
+
+			if (ds == null)
+			   out.println ("ds is null.");
+     
+			  Connection connection = ds.getConnection();
+			if (connection == null)
+             out.println ("dbcon is null.");
+		  
+		}
+		catch (Exception e)
+		{
+			
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}

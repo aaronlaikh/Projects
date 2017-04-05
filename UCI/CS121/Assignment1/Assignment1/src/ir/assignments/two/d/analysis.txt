@@ -1,1 +1,18 @@
-Please place your analysis of the runtime complexity of your palindrome algorithm in this file.
+Because the main algorithm utilizes two for loops to conduct its analysis,
+the runtime of this algorithm will be in O(n^2).  The sorting algorithm for 
+determining add/reorder locations will be run in O(n).
+
+This is a rather slow runtime and will not be usable in real-life and business
+applications.  The biggest improvement which can be done with this algorithm
+is to simplify the inner algorithm.
+
+Instead of looping through each string adding one by one, the strings can be
+pre-loaded into an array, which can be called.  The strings have thus already
+been created and stored in memory, which will save a small amount of speed.
+This however is still bounded by O(n^2) if the list of strings is n.
+
+Another improvement is to approach the strings from the other end; that is, to
+start with a full string and drop one word at a time, starting from the first word,
+then starting from the last word. This repeats a number of times, dropping the first
+and then last word until all possibilities are reached.  Though the performance may
+be slightly faster, it is still bounded by O(n^2).

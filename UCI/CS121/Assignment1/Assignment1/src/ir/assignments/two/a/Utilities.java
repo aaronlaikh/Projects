@@ -29,19 +29,17 @@ public class Utilities {
 	 * @param input The file to read in and tokenize.
 	 * @return The list of tokens (words) from the input file, ordered by occurrence.
 	 */
-    
     private static Scanner scn;
-	public static ArrayList<String> tokenizeFile(File input) {
+	 public static ArrayList<String> tokenizeFile(File input) {
       ArrayList<String> tokens = new ArrayList<String>();
       try
       {
          scn = new Scanner(input);
          while (scn.hasNext())
          {
-            //System.out.println(scn.next());
             String currentToken = scn.next();
-            if currentToken
-            tokens.add(currentToken);
+            if (alphaNumeric(currentToken))
+               tokens.add(currentToken);
          }
          return tokens;
       }
@@ -49,7 +47,7 @@ public class Utilities {
       {
          System.err.println("Failed to open file.");
       }
-   	return null;
+   	return tokens;
 	}
 	
 	/**
@@ -92,20 +90,47 @@ public class Utilities {
 	 * @param frequencies A list of frequencies.
 	 */
 	public static void printFrequencies(List<Frequency> frequencies) {
+      int freqSum = 0;
+      for (int j = 0; j < frequencies.size(); j++)
+         freqSum += frequencies.get(j).getFrequency();
+      System.out.println("Total item count: " + freqSum);
+      System.out.println("Unique item count: " + frequencies.size() + "\n");
 		for (int i = 0; i < frequencies.size(); i++)
       {
-         System.out.println(frequencies.get(i).getFrequency());
+         System.out.println(String.format("%-36s%d", frequencies.get(i).getText(), frequencies.get(i).getFrequency()));
       }
 	}
    
+   /*
+      Checks if given string contains only alphanumeric characters. (0-9, a-z, A-Z).
+      Returns true if only alphanumeric. Else, false.
+   */
+   private static boolean alphaNumeric(String token){
+      for (int i = 0; i < token.length(); i++)
+      {
+         char c = token.charAt(i);
+         if (c < '0' || (c > '0' && c <= '@') || (c > 'Z' && c <= '`') || (c > 'z'))
+            return false;
+      }
+      return true;
+   }
+   
    public static void main(String[] args)
    {
-   System.out.println("asdfjkl;");
-      File input = new File("D:/Users/Aaron/Documents/Projects/Projects/UCI/CS121/Assignment1/Assignment1/src/ir/assignments/two/a/Frequency.java");
-      ArrayList<String> tokens = tokenizeFile(input);
-      for (int i = 0; i < tokens.size(); i++)
+      try
       {
-         System.out.println(tokens.get(i));
+         File input = new File(args[0]);
+         ArrayList<String> tokens = tokenizeFile(input);
+         List<Frequency> frequencies = new ArrayList<Frequency>();
+         for (int i = 0; i < tokens.size(); i++)
+         {
+            frequencies.add(new Frequency(tokens.get(i), 1));
+         }
+         printFrequencies(frequencies);
+      }
+      catch (Exception e)
+      {
+         System.err.println("File not found.");
       }
    }
 }

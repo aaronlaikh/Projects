@@ -1,0 +1,139 @@
+html , body{
+	font-size: 36px;
+	color: #aaaaaa;
+	background-color: #ffffff;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+	height: 100%;
+	background-image: "D:\Users\Aaron\Pictures\doodles\fdaSL.png";
+	/*height: 100px;
+	width: 50%;
+	border: 1px none black;
+	border-radius: 5px;
+	display: inline;
+	margin: 10px 10px 10px 10px;
+	font-size: 36px;
+	font-family: Tahoma, serif;
+	padding: 10px;
+	text-align: center;*/
+}
+
+#gradient {
+	background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+    background-image: -ms-linear-gradient(left, rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+    background-image: -webkit-gradient(linear, 0 0, 100% 0, from(rgba(255, 255, 255, 1)), to(rgba(0, 0, 0, 0)));
+    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+    background-image: -o-linear-gradient(left, rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(left, rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(255, 255, 255, 1)', endColorstr='rgba(0, 0, 0, 0)', GradientType=1);
+    padding: 2rem 0;
+	position: fixed;
+	z-index: 3;
+}
+#girl {
+	position: absolute;
+	display: inline-block;
+	width: 600px;
+	height: 600px;
+	overflow: hidden;
+	position: fixed;
+	z-index: 2;
+}
+
+.nav-container {
+	position: fixed;
+	width: 500px;
+	height: 600px;
+	top: 400px;
+	z-index: 99;
+	
+}
+
+.navigation {
+	font-family:"Century Gothic", CenturyGothic, sans-serif;
+	position: fixed;
+	z-index: 999;
+	opacity: 1;
+	display: block;
+	width: 100%;
+	left: 100px;
+	
+	transition: opacity .25s;
+	-webkit-transition: opacity .25s;
+}
+.nav-select{
+	opacity: 0.5;
+	display: block;
+	transition: opacity .25s;
+	-webkit-transition: opacity .25s;
+}
+
+.navigation:hover {
+	opacity: 1;
+}
+
+.nav-select:hover {
+	opacity: 1;
+}
+
+#one {
+}
+
+#two {
+	left: 400px;
+}
+
+a {
+	text-decoration: none;
+	color: #aaaaaa;
+}
+
+.block {
+display:inline-block;
+	position: fixed;
+	width: 50px;
+}
+
+.bg-container {
+	position: absolute;
+	z-index: 1;
+	width: 102.5%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0 auto -30px;
+}
+
+.bg-image {
+	/*background-image: url("images\\miku2.jpg");*/
+	height: 100%;
+	width: auto;
+	margin-left: 0;
+}
+
+/*img {
+	content: url("images\\miku2.jpg");
+	display: block;
+	width: 125%;
+	height: auto;
+	top: -20%;
+	margin-left: -12%;
+	margin-right: -10%;
+	margin-top: -2%;
+	opacity:0.75;
+	transition: opacity 0.5s;
+	-webkit-transition: opacity 0.5s;
+}
+*/
+
+footer {
+	padding: 15px;
+	display: block;
+	width: 100%;
+	text-align: center;
+	background-color: #151515;
+	opacity: 0.8;
+	position: absolute;
+	z-index: 2;
+	bottom: 0;
+}

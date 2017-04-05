@@ -1,0 +1,48 @@
+
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
+import java.io.IOException;
+import javax.servlet.http.*;
+import javax.servlet.*;
+import java.util.ArrayList;
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.sql.DataSource;
+
+
+public class movieServlet extends HttpServlet {
+    public movieServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		
+		if (request.getSession().getAttribute("logged_in") == null)
+			response.sendRedirect("/loginServlet");
+		
+		int movie_id = Integer.parseInt(request.getParameter("movieid"));
+		request.setAttribute("movie_id", movie_id);
+		String stars = "(";
+		String genres = "(";
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}
