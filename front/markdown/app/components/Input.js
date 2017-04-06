@@ -28,7 +28,7 @@ class Input extends React.Component {
 			display: 'inline-block',
 			background: 'green'
 		};
-		return <textarea className={markdownInput} type="text" ref="markdownInput" onChange={()=> this.updateState(this)}></textarea>//{this.displayChange}></input>;
+		return <textarea style={markdownInput} type="text" ref="markdownInput" onChange={()=> this.updateState(this)}></textarea>//{this.displayChange}></input>;
 	}
 }
 
