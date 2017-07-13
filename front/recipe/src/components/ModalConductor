@@ -1,0 +1,13 @@
+import React, { Component } from 'react';
+
+class ModalConductor extends Component {
+  constructor(){
+    super();
+  }
+
+  render() {
+    console.log(this.props.value);
+  }
+}
+
+export default ModalConductor;
