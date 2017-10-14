@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import SearchBar from '../component/searchbar/SearchBar';
-import styles from '../index.css';
-import SearchResults from './results/SearchResults';
+import styles from './index.css';
+//import SearchResults from './results/SearchResults';
+import SearchResults from './searchbar/SearchResults';
 import SelectedResults from './results/SelectedResults';
+import ShoppingList from './shoppinglist/ShoppingList';
 
 class App extends Component {
 	constructor(){
@@ -10,7 +12,8 @@ class App extends Component {
 
 		this.state = {
 			searchResults: [],
-			selectedResults: []
+			selectedResults: [],
+			isFocused: false
 		}
 	}
 
@@ -44,6 +47,12 @@ class App extends Component {
 		});
 	}
 
+	setSearchFocus(status){
+		this.setState({
+			isFocused: status
+		});
+	}
+
 	doSearch(searchURL){
 		/*
 		var response = this.getResponseFromAPI(searchURL);
@@ -60,10 +69,11 @@ class App extends Component {
 	}
 
 	render(){
+		//<SearchResults keepFocus={this.setSearchFocus.bind(this)} searchFocused={this.state.isFocused} addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
 		return (
 			<div className="app">
-				<SearchBar search={this.doSearch.bind(this)}/>
-				<SearchResults addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
+				<ShoppingList />
+				<SearchBar isFocused={this.state.isFocused} searchFocus={this.setSearchFocus.bind(this)} search={this.doSearch.bind(this)} searchResults={this.state.searchResults} addItem={this.addToSelected.bind(this)}/>				
 				<SelectedResults selectedResults={this.state.selectedResults}/>
 			</div>
 		);

@@ -1,0 +1,13 @@
+.shoppingList {
+	display: inline-block;
+	text-align: center;
+	position: fixed;
+	margin-left: 75%;
+	margin-top: 48px;
+	z-index: 1;
+	border-color: #fff;
+	border: 1px solid;
+	width: 18%;
+	min-width: 150px;
+	min-height: 400px;
+}

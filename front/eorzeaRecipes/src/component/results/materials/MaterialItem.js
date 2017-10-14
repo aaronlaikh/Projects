@@ -1,0 +1,17 @@
+import React, { Component } from 'react';
+import styles from '../css/Materials.css';
+
+class MaterialItem extends Component {
+	render(){
+		console.log(this.props.item);
+		return (
+			<tr>
+				<td className={styles.materialImage}><img src={this.props.item.icon}/></td>
+				<td className={styles.materialQuantity}>{this.props.item.quantity}</td>
+				<td>{this.props.item.name}</td>
+			</tr>
+		);
+	}
+}
+
+export default MaterialItem;

@@ -1,0 +1,20 @@
+.materialsTable {
+	padding-top: 0px;
+	margin-top: 0px;
+	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+	font-size: 14px;
+	color: #fff;
+	width: 60%;
+	padding: 0px;
+	height: auto;
+}
+
+.materialImage {
+	width: 25px;
+	text-align: center;
+}
+
+.materialQuantity {
+	width: 30px;
+	text-align: center;
+}

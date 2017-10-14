@@ -1,48 +1,47 @@
-.resultsBox {
-	width: 95%;
-	max-height: 300px;
-	overflow: auto;
-}
-
 .searchIcon {
 	display: inline-block;
 	padding: 5px;
 }
 
-img {
-	height: 25px;
-	vertical-align: middle;
-}
-
-.resultName {
-	display: inline-block;
-	line-height: 5px;
-}
-
-.resultItem {
-	color: #fff;
-	height: 32px;
-	padding: 3px;
-	margin-left: 15px;
-	cursor: pointer;
-}
-
-.resultItem:hover {
-	background-color: #888;
+.selectedBox {
+	width: 66%;
+	margin-left: 56px;
+	height: 600px;
+	position: fixed;
+	margin-top: 96px;
+	overflow: auto;
+	min-width: 300px;
 }
 
 .selectedImg {
-	height: 50px;
+	height: 45px;
 	vertical-align: middle;
 }
 
 .selectedItem {
-	display: inline-block;
-	font-size: 24px;
-	width: 75%;
+	font-size: 18 px;
+	width: 100%;
 	height: 300px;
+	border: 1px solid black;
+	border-radius: 10px;
+	margin-bottom: 5px;
 }
 
 .selectedName {
 	color: #fff;
+	display: inline-block;
+}
+
+.itemInfo {
+	height: 1px;
+}
+
+.itemOperation{
+	text-align: center;
+	width: 25px;
+	cursor: default;
+}
+
+.itemOperation:hover{
+	background-color: #999;
 }

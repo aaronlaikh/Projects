@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styles from './css/searchbar.css';
 
+import SearchResults from './SearchResults';
+
 class SearchBar extends Component {
 	updateState(evt){
 		this.setState({
@@ -16,10 +18,23 @@ class SearchBar extends Component {
 		return queryString;
 	}
 
+	setFocus(evt){
+		if (evt.nativeEvent.type == 'focus')
+			this.props.searchFocus(true);
+		else if (evt.nativeEvent.type == 'blur')
+			this.props.searchFocus(false);
+	}
+
 	render(){
 		return (
-			<div className={styles.searchbar}>
-				<input className={styles.inputBox} onChange={this.updateState.bind(this)}></input>
+			<div>
+				<div className={styles.searchbar}>
+					<input className={styles.inputBox} 
+						onFocus={this.setFocus.bind(this)} 
+						onBlur={this.setFocus.bind(this)} 
+						onChange={this.updateState.bind(this)}></input>
+				</div>
+				<SearchResults searchFocused={this.props.isFocused} keepFocus={this.props.searchFocus.bind(this)} searchResults={this.props.searchResults} addItem={this.props.addItem.bind(this)}/>
 			</div>
 		);
 	}

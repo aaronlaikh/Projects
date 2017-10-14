@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
+import styles from '../css/Materials.css';
+import MaterialItem from './MaterialItem';
 
 class MaterialsTree extends Component {
 	render(){
 		var mats = this.props.recipeTree.tree.map((material) =>
 		{
-			return (<div>{material.name}</div>)
+			return (<MaterialItem item={material} key={material.id}/>)
 		}); 
 		return (
-			<div>
+			<table className={styles.materialsTable}>
+				<tbody>
+				<tr>
+					<td className={styles.materialImage}>Image</td>
+					<td className={styles.materialQuantity}>Quantity</td>
+					<td>Item Name</td>
+				</tr>
 				{mats}
-			</div>
+				</tbody>
+			</table>
 		);
 	}
 }
