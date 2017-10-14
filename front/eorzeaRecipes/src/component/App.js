@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import SearchBar from '../component/searchbar/SearchBar';
 import styles from '../index.css';
 import SearchResults from './results/SearchResults';
+import SelectedResults from './results/SelectedResults';
 
 class App extends Component {
 	constructor(){
 		super();
 
 		this.state = {
-			searchResults: []
+			searchResults: [],
+			selectedResults: []
 		}
 	}
 
@@ -27,6 +29,21 @@ class App extends Component {
 		});
 	}
 
+	addToSelected(item){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: item.url_api,
+			success: function(response){
+				item.tree = response.tree;
+
+				this.setState({
+					selectedResults: this.state.selectedResults.concat(item)
+				});
+			}.bind(this)
+		});
+	}
+
 	doSearch(searchURL){
 		/*
 		var response = this.getResponseFromAPI(searchURL);
@@ -42,17 +59,12 @@ class App extends Component {
 		});
 	}
 
-	componentDidMount(){
-		console.log("component mounted");
-		this.doSearch("http://api.xivdb.com/search?string=allagan&one=recipes");
-		//console.log(this.state.searchResults);
-	}
-
 	render(){
 		return (
 			<div className="app">
 				<SearchBar search={this.doSearch.bind(this)}/>
-				<SearchResults searchResults = {this.state.searchResults}/>
+				<SearchResults addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
+				<SelectedResults selectedResults={this.state.selectedResults}/>
 			</div>
 		);
 	}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './css/searchbar.css';
+import styles from './css/searchbar.css';
 
 class SearchBar extends Component {
 	updateState(evt){
@@ -18,7 +18,9 @@ class SearchBar extends Component {
 
 	render(){
 		return (
-			<input onChange={this.updateState.bind(this)}></input>
+			<div className={styles.searchbar}>
+				<input className={styles.inputBox} onChange={this.updateState.bind(this)}></input>
+			</div>
 		);
 	}
 }

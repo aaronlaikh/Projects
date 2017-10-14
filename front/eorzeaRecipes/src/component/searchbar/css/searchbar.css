@@ -1,3 +1,17 @@
-html {
-	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
+.searchbar {
+	width: 95%;
+	height: 50px;
+	display: inline-block;
+}
+
+.inputBox {
+	color: #fff;
+	font-size: 16px;
+	width: 80%;
+	height: 24px;
+	margin-left: 25px;
+	margin-top: 13px;
+	background-color: transparent;
+	border: 1px solid black;
+	border-radius: 5px;
 }
