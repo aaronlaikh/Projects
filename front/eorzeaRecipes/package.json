@@ -1,7 +1,7 @@
 {
-  "name": "fgomat",
+  "name": "eorzeaRecipes",
   "version": "1.0.0",
-  "description": "Fate/GO Materials Calculator",
+  "description": "FFXIV Crafting Recipes Material Calculator",
   "main": "index.js",
   "scripts": {
     "build": "webpack",

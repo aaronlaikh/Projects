@@ -1,8 +1,9 @@
 .shoppingList {
 	display: inline-block;
 	text-align: center;
-	margin-left: 80%;
+	margin-left: 75%;
 	margin-top: 48px;
+	margin-right: 2%;
 	z-index: 1;
 	border-color: #fff;
 	border: 1px solid;
