@@ -3,8 +3,12 @@ import styles from './css/SearchResults.css';
 import MaterialsTree from './materials/MaterialsTree';
 
 class SelectedItem extends Component {
+
+	addToList(){
+		this.props.addToCart(this.props.item);
+	}
+
 	render(){
-		console.log(this.props.item);
 		return (
 			/*
 			<div className={styles.selectedItem}>
@@ -17,7 +21,7 @@ class SelectedItem extends Component {
 				<tr className={styles.itemInfo}>
 					<td className={styles.searchIcon}><img className={styles.selectedImg} src={this.props.item.icon}/></td>
 					<td className={styles.selectedName}>{this.props.item.item_name}</td>
-					<td className={styles.itemOperation}>Cart</td>
+					<td className={styles.itemOperation} onClick={this.addToList.bind(this)}>Cart</td>
 					<td className={styles.itemOperation}>Delete</td>
 				</tr>
 				<tr>

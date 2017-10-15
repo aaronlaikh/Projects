@@ -7,7 +7,7 @@ class SelectedResults extends Component {
 
 		console.log(this.props.selectedResults);
 		var selects = this.props.selectedResults.map((item) => {
-			return <SelectedItem key={item.id} item={item}/>
+			return <SelectedItem key={item.id} item={item} addToCart={this.props.addItemToCart.bind(this)}/>
 		});
 		return (
 			<div className={styles.selectedBox}>

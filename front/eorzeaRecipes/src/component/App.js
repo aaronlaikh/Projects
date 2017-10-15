@@ -13,7 +13,8 @@ class App extends Component {
 		this.state = {
 			searchResults: [],
 			selectedResults: [],
-			isFocused: false
+			isFocused: false,
+			shoppingCart: []
 		}
 	}
 
@@ -47,6 +48,12 @@ class App extends Component {
 		});
 	}
 
+	addItemToCart(item){
+		this.setState({
+			shoppingCart: this.state.shoppingCart.concat(item)
+		});
+	}
+
 	setSearchFocus(status){
 		this.setState({
 			isFocused: status
@@ -72,9 +79,9 @@ class App extends Component {
 		//<SearchResults keepFocus={this.setSearchFocus.bind(this)} searchFocused={this.state.isFocused} addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
 		return (
 			<div className="app">
-				<ShoppingList />
+				<ShoppingList cart={this.state.shoppingCart}/>
 				<SearchBar isFocused={this.state.isFocused} searchFocus={this.setSearchFocus.bind(this)} search={this.doSearch.bind(this)} searchResults={this.state.searchResults} addItem={this.addToSelected.bind(this)}/>				
-				<SelectedResults selectedResults={this.state.selectedResults}/>
+				<SelectedResults selectedResults={this.state.selectedResults} addItemToCart={this.addItemToCart.bind(this)}/>
 			</div>
 		);
 	}
