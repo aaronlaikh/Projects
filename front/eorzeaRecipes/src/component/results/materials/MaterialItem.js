@@ -8,7 +8,7 @@ class MaterialItem extends Component {
 			<tr>
 				<td className={styles.materialImage}><img src={this.props.item.icon}/></td>
 				<td className={styles.materialQuantity}>{this.props.item.quantity}</td>
-				<td>{this.props.item.name}</td>
+				<td className={styles.materialName}>{this.props.item.name}</td>
 			</tr>
 		);
 	}

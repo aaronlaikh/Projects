@@ -4,9 +4,11 @@
 }
 
 .selectContainer {
+	position: relative;
 	width: 100%;
 	margin-left: 61px;
-	height: 600px;
+	min-height: 600px;
+	max-height: 840px;
 	overflow: auto;
 	min-width: 350px;
 }
@@ -60,4 +62,9 @@
 
 .crafterInfo {
 	border: 1px solid black;
+}
+
+.materialsContainer {
+	width: 80%;
+	min-width: 400px;
 }

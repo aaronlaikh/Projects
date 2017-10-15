@@ -38,7 +38,7 @@ class SelectedItem extends Component {
 						<td className={styles.craftContainer}>
 						<CrafterInfo item={this.props.item}/>
 						</td>
-						<td>
+						<td className={styles.materialsContainer}>
 						<MaterialsTree recipeTree={this.props.item}/>
 						</td>
 					</tr>

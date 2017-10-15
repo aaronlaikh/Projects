@@ -4,7 +4,7 @@
 	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
 	font-size: 14px;
 	color: #fff;
-	width: 60%;
+	width: 95%;
 	padding: 0px;
 	height: auto;
 }
@@ -17,4 +17,8 @@
 .materialQuantity {
 	width: 30px;
 	text-align: center;
+}
+
+.materialName {
+	width: auto;
 }
