@@ -4,14 +4,14 @@ import styles from './css/SearchResults.css';
 
 class SelectedResults extends Component {
 	render(){
-
-		console.log(this.props.selectedResults);
 		var selects = this.props.selectedResults.map((item) => {
-			return <SelectedItem key={item.id} item={item} addToCart={this.props.addItemToCart.bind(this)}/>
+			return <SelectedItem key={item.id} item={item} addToCart={this.props.addItemToCart.bind(this)} deleteFromResults={this.props.deleteFromResults.bind(this)}/>
 		});
 		return (
-			<div className={styles.selectedBox}>
-				{selects}
+			<div className={styles.selectContainer}>
+				<div className={styles.selectedBox}>
+					{selects}
+				</div>
 			</div>
 		);
 	}

@@ -8,3 +8,8 @@ html {
 	width: 90%;
 	min-width: 800px;
 }
+
+.resultsContainer {
+	width: 70%;
+	position: fixed;
+}

@@ -1,11 +1,10 @@
 .resultsBox {
-	width: 67%;
+	width: 100%;
+	font-size: 14px;
 	margin-left: 56px;
-	margin-top: 80px;
 	max-height: 300px;
 	background-color: rgba(0,0,0,0.5);
 	overflow: auto;
-	position: fixed;
 	z-index: 10;
 	border-radius: 5px;
 }

@@ -3,14 +3,16 @@
 	padding: 5px;
 }
 
-.selectedBox {
-	width: 66%;
-	margin-left: 56px;
+.selectContainer {
+	width: 100%;
+	margin-left: 61px;
 	height: 600px;
-	position: fixed;
-	margin-top: 96px;
 	overflow: auto;
-	min-width: 300px;
+	min-width: 350px;
+}
+
+.selectedBox {
+	width:99.5%;
 }
 
 .selectedImg {
@@ -21,7 +23,6 @@
 .selectedItem {
 	font-size: 18 px;
 	width: 100%;
-	height: 300px;
 	border: 1px solid black;
 	border-radius: 10px;
 	margin-bottom: 5px;
@@ -30,18 +31,33 @@
 .selectedName {
 	color: #fff;
 	display: inline-block;
+	width: 85%;
+	min-width: 300px;
 }
 
 .itemInfo {
 	height: 1px;
 }
 
+.itemNameInfoTable {
+	width: 100%;
+}
+
 .itemOperation{
+	display: inline-block;
 	text-align: center;
-	width: 25px;
 	cursor: default;
 }
 
 .itemOperation:hover{
 	background-color: #999;
+}
+
+.craftContainer {
+	width: 100px;
+	vertical-align: top;
+}
+
+.crafterInfo {
+	border: 1px solid black;
 }
