@@ -27,8 +27,8 @@ class SelectedItem extends Component {
 					<tr className={styles.itemInfo}>
 						<td className={styles.searchIcon}><img className={styles.selectedImg} src={this.props.item.icon}/></td>
 						<td className={styles.selectedName}>{this.props.item.item_name}</td>
-						<td className={styles.itemOperation} onClick={this.addToList.bind(this)}>+</td>
 						<td className={styles.itemOperation} onClick={this.deleteThis.bind(this)}>-</td>
+						<td className={styles.itemOperation} onClick={this.addToList.bind(this)}>+</td>
 					</tr>
 					</tbody>
 				</table>

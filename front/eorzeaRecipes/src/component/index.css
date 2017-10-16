@@ -1,15 +1,25 @@
 html {
 	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
-	background-color: #444;
 	color: #fff;
+	padding: 0px;
+	margin: 0px;
+	background-color: #222;
 }
 
 .app {
 	width: 90%;
 	min-width: 800px;
+	height: 95vh;
+	background-color: #444;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0px;
 }
 
 .resultsContainer {
-	width: 70%;
+	width: 62%;
+	min-width: 550px;
+	max-width: 930px;
 	position: fixed;
+	padding-right: 5px;
 }
