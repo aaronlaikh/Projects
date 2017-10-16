@@ -12,9 +12,9 @@ class MaterialsTree extends Component {
 			<table className={styles.materialsTable}>
 				<tbody>
 				<tr>
-					<td className={styles.materialImage}>Image</td>
-					<td className={styles.materialQuantity}>Quantity</td>
-					<td>Item Name</td>
+					<td className={styles.materialImage}></td>
+					<td className={styles.materialQuantity}>Qty</td>
+					<td>Item</td>
 				</tr>
 				{mats}
 				</tbody>

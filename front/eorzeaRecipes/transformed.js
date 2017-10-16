@@ -21801,8 +21801,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 			selectedResults: [],
 			isFocused: false,
 			shoppingCart: [],
-			cartMats: [],
-			cartQuantities: []
+			cartMats: {}
 		};
 	}
 
@@ -21834,27 +21833,68 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 	}
 
 	addItemToCart(item) {
-		var itemMats = [];
-		var itemQuants = [];
+		var itemIndex = -1;
+		for (var i = 0; i < this.state.shoppingCart.length; i++) {
+			if (this.state.shoppingCart[i].name == item.name) {
+				itemIndex = i;
+				break;
+			}
+		}
+
+		var matsCopy = Object.assign({}, this.state).cartMats;
 		item.tree.map(material => {
-			if (this.state.cartMats.indexOf(material.name) > -1) {
-				console.log("already in mats");
-				var index = this.state.cartMats.indexOf(material.name);
-				this.state.cartQuantities[index] += material.quantity;
+			if (this.state.cartMats[material.name] != null) {
+				matsCopy[material.name] += material.quantity;
 			} else {
-				console.log("adding to mats");
-				itemMats.push(material.name);
-				itemQuants.push(material.quantity);
+				matsCopy[material.name] = material.quantity;
 			}
 		});
-		console.log(this.state.cartMats);
-		this.setState({
-			shoppingCart: this.state.shoppingCart.concat(item),
-			cartMats: this.state.cartMats.concat(itemMats),
-			cartQuantities: this.state.cartQuantities.concat(itemQuants)
-		}, () => {
-			console.log(this.state.cartMats);
+		if (itemIndex < 0) {
+			item.quantity = 1;
+			this.setState({
+				shoppingCart: this.state.shoppingCart.concat(item),
+				cartMats: matsCopy
+			});
+		} else {
+			var cartCopy = Object.assign({}, this.state).shoppingCart;
+			cartCopy[itemIndex].quantity += 1;
+			this.setState({
+				shoppingCart: cartCopy,
+				cartMats: matsCopy
+			});
+		}
+	}
+
+	deleteItemFromCart(item) {
+		var itemIndex = -1;
+		for (var i = 0; i < this.state.shoppingCart.length; i++) {
+			if (this.state.shoppingCart[i].name == item.name) {
+				itemIndex = i;
+				break;
+			}
+		}
+		var matsCopy = Object.assign({}, this.state).cartMats;
+		item.tree.map(material => {
+			if (matsCopy[material.name] != null) {
+				matsCopy[material.name] -= material.quantity;
+				if (matsCopy[material.name] <= 0) delete matsCopy[material.name];
+			} else {
+				console.log("deleting materials that aren't there");
+			}
 		});
+		if (itemIndex < 0) {
+			console.log("ERROR, DELETING ITEM THAT ISN'T IN THE CART");
+		} else {
+			var cartCopy = Object.assign({}, this.state).shoppingCart;
+			cartCopy[itemIndex].quantity -= 1;
+			if (cartCopy[itemIndex].quantity <= 0) {
+				cartCopy.splice(itemIndex, 1);
+			}
+			this.setState({
+				shoppingCart: cartCopy,
+				cartMats: matsCopy
+			});
+		}
 	}
 
 	deleteItemFromSelect(item) {
@@ -21891,8 +21931,8 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 		//<SearchResults keepFocus={this.setSearchFocus.bind(this)} searchFocused={this.state.isFocused} addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'div',
-			{ className: 'app' },
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__shoppinglist_ShoppingList__["a" /* default */], { cart: this.state.shoppingCart, cartMats: this.state.cartMats, cartQuantities: this.state.cartQuantities }),
+			{ className: __WEBPACK_IMPORTED_MODULE_2__index_css___default.a.app },
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__shoppinglist_ShoppingList__["a" /* default */], { cart: this.state.shoppingCart, addCartItem: this.addItemToCart.bind(this), deleteCartItem: this.deleteItemFromCart.bind(this), cartMats: this.state.cartMats }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				'div',
 				{ className: __WEBPACK_IMPORTED_MODULE_2__index_css___default.a.resultsContainer },
@@ -22148,7 +22188,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, ".SearchResults__resultsBox___Ko_Dr {\r\n\twidth: 72%;\r\n\tfont-size: 14px;\r\n\tmargin-left: 60px;\r\n\tmax-height: 300px;\r\n\tbackground-color: rgba(0,0,0,0.8);\r\n\tposition: fixed;\r\n\toverflow: auto;\r\n\tz-index: 99;\r\n\tborder-radius: 5px;\r\n}\r\n\r\n.SearchResults__hiddenBox___2wbDu {\r\n\tdisplay: none;\r\n}\r\n\r\n.SearchResults__searchIcon___1_MC4 {\r\n\tdisplay: inline-block;\r\n\tmargin-left: 15px;\r\n\tpadding: 5px;\r\n}\r\n\r\nimg {\r\n\theight: 25px;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.SearchResults__resultName___1oyMm {\r\n\tdisplay: inline-block;\r\n\tline-height: 5px;\r\n}\r\n\r\n.SearchResults__resultItem____AyIR {\r\n\tcolor: #fff;\r\n\theight: 32px;\r\n\tpadding: 3px;\r\n\tcursor: pointer;\r\n}\r\n\r\n.SearchResults__resultItem____AyIR:hover {\r\n\tbackground-color: #888;\r\n}\r\n", ""]);
+exports.push([module.i, ".SearchResults__resultsBox___Ko_Dr {\r\n\twidth: 62%;\r\n\tfont-size: 14px;\r\n\tmargin-left: 60px;\r\n\tmax-height: 300px;\r\n\tbackground-color: rgba(0,0,0,0.8);\r\n\tposition: fixed;\r\n\toverflow: auto;\r\n\tz-index: 99;\r\n\tborder-radius: 5px;\r\n}\r\n\r\n.SearchResults__hiddenBox___2wbDu {\r\n\tdisplay: none;\r\n}\r\n\r\n.SearchResults__searchIcon___1_MC4 {\r\n\tdisplay: inline-block;\r\n\tmargin-left: 15px;\r\n\tpadding: 5px;\r\n}\r\n\r\nimg {\r\n\theight: 25px;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.SearchResults__resultName___1oyMm {\r\n\tdisplay: inline-block;\r\n\tline-height: 5px;\r\n}\r\n\r\n.SearchResults__resultItem____AyIR {\r\n\tcolor: #fff;\r\n\theight: 32px;\r\n\tpadding: 3px;\r\n\tcursor: pointer;\r\n}\r\n\r\n.SearchResults__resultItem____AyIR:hover {\r\n\tbackground-color: #888;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
@@ -22199,7 +22239,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "html {\r\n\tfont-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \r\n\tbackground-color: #444;\r\n\tcolor: #fff;\r\n}\r\n\r\n.index__app___1DXQk {\r\n\twidth: 90%;\r\n\tmin-width: 800px;\r\n}\r\n\r\n.index__resultsContainer___2CID9 {\r\n\twidth: 70%;\r\n\tposition: fixed;\r\n}\r\n", ""]);
+exports.push([module.i, "html {\r\n\tfont-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \r\n\tcolor: #fff;\r\n\tpadding: 0px;\r\n\tmargin: 0px;\r\n\tbackground-color: #222;\r\n}\r\n\r\n.index__app___1DXQk {\r\n\twidth: 90%;\r\n\tmin-width: 800px;\r\n\theight: 95vh;\r\n\tbackground-color: #444;\r\n\tmargin-left: auto;\r\n\tmargin-right: auto;\r\n\tmargin-top: 0px;\r\n}\r\n\r\n.index__resultsContainer___2CID9 {\r\n\twidth: 62%;\r\n\tmin-width: 550px;\r\n\tmax-width: 930px;\r\n\tposition: fixed;\r\n\tpadding-right: 5px;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
@@ -22298,13 +22338,13 @@ class SelectedItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 							),
 							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 								'td',
-								{ className: __WEBPACK_IMPORTED_MODULE_1__css_SearchResults_css___default.a.itemOperation, onClick: this.addToList.bind(this) },
-								'+'
+								{ className: __WEBPACK_IMPORTED_MODULE_1__css_SearchResults_css___default.a.itemOperation, onClick: this.deleteThis.bind(this) },
+								'-'
 							),
 							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 								'td',
-								{ className: __WEBPACK_IMPORTED_MODULE_1__css_SearchResults_css___default.a.itemOperation, onClick: this.deleteThis.bind(this) },
-								'-'
+								{ className: __WEBPACK_IMPORTED_MODULE_1__css_SearchResults_css___default.a.itemOperation, onClick: this.addToList.bind(this) },
+								'+'
 							)
 						)
 					)
@@ -22347,7 +22387,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, ".SearchResults__searchIcon___2BMp7 {\r\n\tdisplay: inline-block;\r\n\tpadding: 5px;\r\n}\r\n\r\n.SearchResults__selectContainer___DQx5g {\r\n\tposition: relative;\r\n\twidth: 100%;\r\n\tmargin-left: 61px;\r\n\tmin-height: 600px;\r\n\tmax-height: 840px;\r\n\toverflow: auto;\r\n\tmin-width: 350px;\r\n}\r\n\r\n.SearchResults__selectedBox___2iaLj {\r\n\twidth:99.5%;\r\n}\r\n\r\n.SearchResults__selectedImg___1c7Jr {\r\n\theight: 45px;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.SearchResults__selectedItem___31hdD {\r\n\tfont-size: 18 px;\r\n\twidth: 100%;\r\n\tborder: 1px solid black;\r\n\tborder-radius: 10px;\r\n\tmargin-bottom: 5px;\r\n}\r\n\r\n.SearchResults__selectedName___3ykV2 {\r\n\tcolor: #fff;\r\n\tdisplay: inline-block;\r\n\twidth: 85%;\r\n\tmin-width: 300px;\r\n}\r\n\r\n.SearchResults__itemInfo___2o5wt {\r\n\theight: 1px;\r\n}\r\n\r\n.SearchResults__itemNameInfoTable___1ESt1 {\r\n\twidth: 100%;\r\n}\r\n\r\n.SearchResults__itemOperation___ArOX2{\r\n\tdisplay: inline-block;\r\n\ttext-align: center;\r\n\tcursor: default;\r\n}\r\n\r\n.SearchResults__itemOperation___ArOX2:hover{\r\n\tbackground-color: #999;\r\n}\r\n\r\n.SearchResults__craftContainer___1Vc23 {\r\n\twidth: 100px;\r\n\tvertical-align: top;\r\n}\r\n\r\n.SearchResults__crafterInfo___2K8Ji {\r\n\tborder: 1px solid black;\r\n}\r\n\r\n.SearchResults__materialsContainer___f5c7G {\r\n\twidth: 80%;\r\n\tmin-width: 400px;\r\n}\r\n", ""]);
+exports.push([module.i, ".SearchResults__searchIcon___2BMp7 {\r\n\tdisplay: inline-block;\r\n\tpadding: 5px;\r\n}\r\n\r\n.SearchResults__selectContainer___DQx5g {\r\n\tposition: relative;\r\n\twidth: 100%;\r\n\tmargin-left: 61px;\r\n\theight: 80vh;\r\n\toverflow: auto;\r\n\tmin-width: 350px;\r\n\tbackground-color: #222;\r\n}\r\n\r\n.SearchResults__selectedBox___2iaLj {\r\n\twidth:99.5%;\r\n}\r\n\r\n.SearchResults__selectedImg___1c7Jr {\r\n\theight: 45px;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.SearchResults__selectedItem___31hdD {\r\n\tfont-size: 14px;\r\n\twidth: 100%;\r\n\tborder: 1px solid black;\r\n\tborder-radius: 10px;\r\n\tmargin-bottom: 5px;\r\n}\r\n\r\n.SearchResults__selectedName___3ykV2 {\r\n\tfont-size: 18px;\r\n\tcolor: #fff;\r\n\tdisplay: inline-block;\r\n\twidth: 80%;\r\n\tmin-width: 300px;\r\n}\r\n\r\n.SearchResults__itemInfo___2o5wt {\r\n\theight: 1px;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.SearchResults__itemNameInfoTable___1ESt1 {\r\n\twidth: 100%;\r\n}\r\n\r\n.SearchResults__itemOperation___ArOX2{\r\n\tdisplay: inline-block;\r\n\ttext-align: center;\r\n\tcursor: default;\r\n\theight: 100%;\r\n\twidth: 36px;\r\n\theight: 36px;\r\n\tvertical-align: middle;\r\n\tfloat: right;\r\n}\r\n\r\n.SearchResults__itemOperation___ArOX2:hover{\r\n\tbackground-color: #999;\r\n}\r\n\r\n.SearchResults__craftContainer___1Vc23 {\r\n\twidth: 100px;\r\n\tvertical-align: top;\r\n\tpadding-right: 24px;\r\n\tpadding-left: 24px;\r\n}\r\n\r\n.SearchResults__crafterInfo___2K8Ji {\r\n\tborder: 1px solid black;\r\n}\r\n\r\n.SearchResults__materialsContainer___f5c7G {\r\n\twidth: 80%;\r\n\tmin-width: 400px;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
@@ -22393,20 +22433,16 @@ class MaterialsTree extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					'tr',
 					null,
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-						'td',
-						{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialImage },
-						'Image'
-					),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', { className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialImage }),
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						'td',
 						{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialQuantity },
-						'Quantity'
+						'Qty'
 					),
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						'td',
 						null,
-						'Item Name'
+						'Item'
 					)
 				),
 				mats
@@ -22450,7 +22486,6 @@ exports.locals = {
 
 class MaterialItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 	render() {
-		console.log(this.props.item);
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'tr',
 			null,
@@ -22537,25 +22572,36 @@ class CrafterInfo extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 class ShoppingList extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 	constructor() {
 		super();
-		this.state = {};
+		this.state = {
+			items: []
+		};
 	}
 
 	addToMaterialsList(name, quantity) {
 		var obj = {};
 		obj[name] = quantity;
 		this.setState(obj);
-		console.log(name, quantity);
+	}
+
+	updateQuantity(item, quantity) {
+		console.log(quantity);
+		if (quantity < 1) {
+			this.props.deleteCartItem(item);
+		} else {
+			this.props.addCartItem(item);
+		}
 	}
 
 	render() {
+		//Update the state with the quantities of the items.
 		var cart = this.props.cart.map((item, i) => {
-			return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__cartItem__["a" /* default */], { key: item.id, item: item, addMaterials: this.addToMaterialsList.bind(this) });
+			return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__cartItem__["a" /* default */], { key: item.id, item: item, updateQuantity: this.updateQuantity.bind(this), addMaterials: this.addToMaterialsList.bind(this) });
 		});
 
 		var materialsTally = [];
-
-		for (var i = 0; i < this.props.cartMats.length; i++) {
-			materialsTally.push(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialItemTally__["a" /* default */], { item_name: this.props.cartMats[i], quantity: this.props.cartQuantities[i] }));
+		var index = 0;
+		for (var key in this.props.cartMats) {
+			materialsTally.push(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialItemTally__["a" /* default */], { key: index++, item_name: key, quantity: this.props.cartMats[key] }));
 		}
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -22565,7 +22611,15 @@ class ShoppingList extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				'div',
 				{ className: __WEBPACK_IMPORTED_MODULE_3__css_ShoppingList_css___default.a.itemList },
-				cart
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'table',
+					null,
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						'tbody',
+						null,
+						cart
+					)
+				)
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				'div',
@@ -22573,7 +22627,11 @@ class ShoppingList extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					'table',
 					null,
-					materialsTally
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						'tbody',
+						null,
+						materialsTally
+					)
 				)
 			)
 		);
@@ -22595,6 +22653,16 @@ class ShoppingList extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
 
 class CartItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+	decrement() {
+		console.log("decrementing");
+		this.props.updateQuantity(this.props.item, -1);
+	}
+
+	increment() {
+		console.log("incrementing");
+		this.props.updateQuantity(this.props.item, 1);
+	}
+
 	render() {
 		var mats = this.props.item.tree.map(material => {
 			//this.props.addMaterials(material.name, material.quantity);
@@ -22614,9 +22682,32 @@ class CartItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 			);
 		});
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-			'ul',
-			{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartName },
-			this.props.item.name
+			'tr',
+			null,
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				'td',
+				{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartQuantityContainer },
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartEditQuantity, onClick: this.decrement.bind(this) },
+					'-'
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartQuantity },
+					this.props.item.quantity
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartEditQuantity, onClick: this.increment.bind(this) },
+					'+'
+				)
+			),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				'td',
+				{ className: __WEBPACK_IMPORTED_MODULE_1__css_ShoppingList_css___default.a.cartName },
+				this.props.item.name
+			)
 		);
 	}
 }
@@ -22632,11 +22723,14 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, ".ShoppingList__shoppingList___1Jr4F {\r\n\tdisplay: inline-block;\r\n\ttext-align: center;\r\n\tmargin-left: 80%;\r\n\tmargin-top: 48px;\r\n\tz-index: 1;\r\n\tborder-color: #fff;\r\n\tborder: 1px solid;\r\n\twidth: 18%;\r\n\tmin-width: 150px;\r\n\tmin-height: 400px;\r\n\tmax-height: 900px;\r\n\tfloat: right;\r\n}\r\n\r\nul {\r\n\tmargin: 0px;\r\n\tpadding: 0px;\r\n\tmargin-left: 20px;\r\n}\r\n\r\n.ShoppingList__cartName___O3baX {\r\n\tfont-size: 12px;\r\n}\r\n\r\n.ShoppingList__itemList___335ca {\r\n\tmax-height: 320px;\r\n\tpadding-bottom: 36px;\r\n\toverflow-y: auto;\r\n}\r\n\r\n.ShoppingList__materialsTally___3JY7d {\r\n\ttext-align: left;\r\n\tmax-height: 400px;\r\n\toverflow-y: auto;\r\n\tfont-size: 12px;\r\n}\r\n\r\n.ShoppingList__tallyQuantity___2R7Mr {\r\n}\r\n\r\n.ShoppingList__tallyItem___icp-x {\r\n\tword-wrap: normal;\r\n}\r\n", ""]);
+exports.push([module.i, ".ShoppingList__shoppingList___1Jr4F {\r\n\tdisplay: inline-block;\r\n\ttext-align: center;\r\n\tmargin-left: 75%;\r\n\tmargin-top: 48px;\r\n\tmargin-right: 2%;\r\n\tz-index: 1;\r\n\tbackground-color: #333;\r\n\twidth: 18%;\r\n\tmin-width: 150px;\r\n\tmin-height: 400px;\r\n\tmax-height: 900px;\r\n\tfloat: right;\r\n}\r\n\r\ntr {\r\n\twidth: 100%;\r\n\tvertical-align: middle;\r\n}\r\n\r\n.ShoppingList__cartQuantityContainer___Pk0hx {\r\n\twidth: 50px;\r\n\theight: 25px;\r\n\tmin-width: 65px;\r\n\tfont-size: 12px;\r\n}\r\n\r\n.ShoppingList__cartQuantity___1YUt_ {\r\n\tdisplay: inline-block;\r\n\twidth: 24px;\r\n\tline-height: 20px;\r\n\tbackground-color: #333;\r\n}\r\n\r\n.ShoppingList__cartEditQuantity___2n_dM {\r\n\tdisplay: inline-block;\r\n\twidth: 20px;\r\n\tline-height: 20px;\r\n\tvertical-align: middle;\r\n\tcursor: default;\r\n}\r\n\r\n.ShoppingList__cartEditQuantity___2n_dM:hover {\r\n\tbackground-color: #aaa;\r\n}\r\n\r\n.ShoppingList__cartName___O3baX {\r\n\tfont-size: 12px;\r\n\twidth: 60%;\r\n}\r\n\r\n.ShoppingList__itemList___335ca {\r\n\tmax-height: 320px;\r\n\tpadding-bottom: 36px;\r\n\toverflow-y: auto;\r\n}\r\n\r\n.ShoppingList__materialsTally___3JY7d {\r\n\ttext-align: left;\r\n\tmax-height: 400px;\r\n\toverflow-y: auto;\r\n\tfont-size: 12px;\r\n}\r\n\r\n.ShoppingList__tallyQuantity___2R7Mr {\r\n}\r\n\r\n.ShoppingList__tallyItem___icp-x {\r\n\tword-wrap: normal;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
 	"shoppingList": "ShoppingList__shoppingList___1Jr4F",
+	"cartQuantityContainer": "ShoppingList__cartQuantityContainer___Pk0hx",
+	"cartQuantity": "ShoppingList__cartQuantity___1YUt_",
+	"cartEditQuantity": "ShoppingList__cartEditQuantity___2n_dM",
 	"cartName": "ShoppingList__cartName___O3baX",
 	"itemList": "ShoppingList__itemList___335ca",
 	"materialsTally": "ShoppingList__materialsTally___3JY7d",

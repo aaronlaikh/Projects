@@ -1,11 +1,11 @@
 .shoppingList {
 	display: inline-block;
 	text-align: center;
-	margin-left: 80%;
+	margin-left: 75%;
 	margin-top: 48px;
+	margin-right: 2%;
 	z-index: 1;
-	border-color: #fff;
-	border: 1px solid;
+	background-color: #333;
 	width: 18%;
 	min-width: 150px;
 	min-height: 400px;
@@ -13,14 +13,40 @@
 	float: right;
 }
 
-ul {
-	margin: 0px;
-	padding: 0px;
-	margin-left: 20px;
+tr {
+	width: 100%;
+	vertical-align: middle;
+}
+
+.cartQuantityContainer {
+	width: 50px;
+	height: 25px;
+	min-width: 65px;
+	font-size: 12px;
+}
+
+.cartQuantity {
+	display: inline-block;
+	width: 24px;
+	line-height: 20px;
+	background-color: #333;
+}
+
+.cartEditQuantity {
+	display: inline-block;
+	width: 20px;
+	line-height: 20px;
+	vertical-align: middle;
+	cursor: default;
+}
+
+.cartEditQuantity:hover {
+	background-color: #aaa;
 }
 
 .cartName {
 	font-size: 12px;
+	width: 60%;
 }
 
 .itemList {

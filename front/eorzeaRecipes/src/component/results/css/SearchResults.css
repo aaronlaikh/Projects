@@ -7,10 +7,10 @@
 	position: relative;
 	width: 100%;
 	margin-left: 61px;
-	min-height: 600px;
-	max-height: 840px;
+	height: 80vh;
 	overflow: auto;
 	min-width: 350px;
+	background-color: #222;
 }
 
 .selectedBox {
@@ -23,7 +23,7 @@
 }
 
 .selectedItem {
-	font-size: 18 px;
+	font-size: 14px;
 	width: 100%;
 	border: 1px solid black;
 	border-radius: 10px;
@@ -31,14 +31,16 @@
 }
 
 .selectedName {
+	font-size: 18px;
 	color: #fff;
 	display: inline-block;
-	width: 85%;
+	width: 80%;
 	min-width: 300px;
 }
 
 .itemInfo {
 	height: 1px;
+	vertical-align: middle;
 }
 
 .itemNameInfoTable {
@@ -49,6 +51,11 @@
 	display: inline-block;
 	text-align: center;
 	cursor: default;
+	height: 100%;
+	width: 36px;
+	height: 36px;
+	vertical-align: middle;
+	float: right;
 }
 
 .itemOperation:hover{
@@ -58,6 +65,8 @@
 .craftContainer {
 	width: 100px;
 	vertical-align: top;
+	padding-right: 24px;
+	padding-left: 24px;
 }
 
 .crafterInfo {

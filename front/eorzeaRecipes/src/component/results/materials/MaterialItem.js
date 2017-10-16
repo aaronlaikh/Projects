@@ -3,7 +3,6 @@ import styles from '../css/Materials.css';
 
 class MaterialItem extends Component {
 	render(){
-		console.log(this.props.item);
 		return (
 			<tr>
 				<td className={styles.materialImage}><img src={this.props.item.icon}/></td>

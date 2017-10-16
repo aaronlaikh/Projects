@@ -8,33 +8,48 @@ class ShoppingList extends Component {
 	constructor()
 	{
 		super();
-		this.state = {};
+		this.state = {
+			items: []
+		};
 	}
 
 	addToMaterialsList(name, quantity){
 		var obj = {};
 		obj[name] = quantity;
 		this.setState(obj);
-		console.log(name, quantity);
+	}
+
+	updateQuantity(item, quantity)
+	{
+		console.log(quantity);
+		if (quantity < 1)
+		{
+			this.props.deleteCartItem(item);
+		}
+		else {
+			this.props.addCartItem(item);
+		}
 	}
 
 	render(){
+		//Update the state with the quantities of the items.
 		var cart = this.props.cart.map((item, i)=>{
-			return <CartItem key={item.id} item={item} addMaterials={this.addToMaterialsList.bind(this)}/>
+			return <CartItem key={item.id} item={item} updateQuantity={this.updateQuantity.bind(this)} addMaterials={this.addToMaterialsList.bind(this)}/>
 		});
 
 		var materialsTally = [];
-
-		for (var i = 0; i < this.props.cartMats.length; i++)
+		var index= 0;
+		for (var key in this.props.cartMats)
 		{
-			materialsTally.push(<MaterialItemTally item_name={this.props.cartMats[i]} quantity={this.props.cartQuantities[i]}/>);
+			materialsTally.push(<MaterialItemTally key={index++} item_name={key} quantity={this.props.cartMats[key]}/>);
 		}
 
 		return (
 			<div className={styles.shoppingList}>Cart
-				<div className={styles.itemList}>{cart}</div>
+				<div className={styles.itemList}>
+					<table><tbody>{cart}</tbody></table></div>
 				<div className={styles.materialsTally}>
-					<table>{materialsTally}</table>
+					<table><tbody>{materialsTally}</tbody></table>
 				</div>
 			</div>
 		);

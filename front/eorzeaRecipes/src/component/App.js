@@ -15,9 +15,8 @@ class App extends Component {
 			selectedResults: [],
 			isFocused: false,
 			shoppingCart: [],
-			cartMats: [],
-			cartQuantities: []
-		}
+			cartMats: {}		
+		};
 	}
 
 	showResults(response){
@@ -50,29 +49,80 @@ class App extends Component {
 	}
 
 	addItemToCart(item){
-		var itemMats = [];
-		var itemQuants = [];
-		item.tree.map((material) =>{
-			if (this.state.cartMats.indexOf(material.name) > -1)
+		var itemIndex = -1;
+		for (var i = 0; i < this.state.shoppingCart.length; i++)
+		{
+			if (this.state.shoppingCart[i].name == item.name)
 			{
-				console.log("already in mats");
-				var index = this.state.cartMats.indexOf(material.name);
-				this.state.cartQuantities[index] += material.quantity;
+				itemIndex = i;
+				break;
+			}
+		}
+
+		var matsCopy=Object.assign({}, this.state).cartMats;
+		item.tree.map((material) =>{
+			if (this.state.cartMats[material.name]!= null)
+			{
+				matsCopy[material.name] += material.quantity;
 			}
 			else {
-				console.log("adding to mats");
-				itemMats.push(material.name);
-				itemQuants.push(material.quantity);
+				matsCopy[material.name] = material.quantity;
 			}
 		});
-		console.log(this.state.cartMats);
-		this.setState({
-			shoppingCart: this.state.shoppingCart.concat(item),
-			cartMats: this.state.cartMats.concat(itemMats),
-			cartQuantities: this.state.cartQuantities.concat(itemQuants)
-		}, () => {
-			console.log(this.state.cartMats);
+		if (itemIndex < 0){
+			item.quantity = 1;
+			this.setState({
+				shoppingCart: this.state.shoppingCart.concat(item),
+				cartMats: matsCopy
+			});
+		}
+		else {
+			var cartCopy = Object.assign({}, this.state).shoppingCart;
+			cartCopy[itemIndex].quantity += 1;
+			this.setState({
+				shoppingCart: cartCopy,
+				cartMats: matsCopy
+			});
+		}
+	}
+
+	deleteItemFromCart(item){
+		var itemIndex = -1;
+		for (var i = 0; i < this.state.shoppingCart.length; i++)
+		{
+			if (this.state.shoppingCart[i].name == item.name)
+			{
+				itemIndex = i;
+				break;
+			}
+		}
+		var matsCopy=Object.assign({}, this.state).cartMats;
+		item.tree.map((material) =>{
+			if (matsCopy[material.name] != null)
+			{
+				matsCopy[material.name] -= material.quantity;
+				if (matsCopy[material.name] <= 0)
+					delete matsCopy[material.name];
+			}
+			else {
+				console.log("deleting materials that aren't there");
+			}
 		});
+		if (itemIndex < 0){
+			console.log("ERROR, DELETING ITEM THAT ISN'T IN THE CART");
+		}
+		else {
+			var cartCopy = Object.assign({}, this.state).shoppingCart;
+			cartCopy[itemIndex].quantity -= 1;
+			if (cartCopy[itemIndex].quantity <= 0)
+			{
+				cartCopy.splice(itemIndex,1);
+			}
+			this.setState({
+				shoppingCart: cartCopy,
+				cartMats: matsCopy
+			});
+		}
 
 	}
 
@@ -109,8 +159,8 @@ class App extends Component {
 	render(){
 		//<SearchResults keepFocus={this.setSearchFocus.bind(this)} searchFocused={this.state.isFocused} addItem={this.addToSelected.bind(this)} searchResults = {this.state.searchResults}/>
 		return (
-			<div className="app">
-				<ShoppingList cart={this.state.shoppingCart} cartMats={this.state.cartMats} cartQuantities = {this.state.cartQuantities}/>
+			<div className={styles.app}>
+				<ShoppingList cart={this.state.shoppingCart} addCartItem={this.addItemToCart.bind(this)} deleteCartItem={this.deleteItemFromCart.bind(this)} cartMats={this.state.cartMats}/>
 				<div className={styles.resultsContainer}>
 					<SearchBar isFocused={this.state.isFocused} searchFocus={this.setSearchFocus.bind(this)} search={this.doSearch.bind(this)} searchResults={this.state.searchResults} addItem={this.addToSelected.bind(this)}/>				
 					<SelectedResults selectedResults={this.state.selectedResults} addItemToCart={this.addItemToCart.bind(this)} deleteFromResults={this.deleteItemFromSelect.bind(this)}/>
