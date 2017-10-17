@@ -4,7 +4,7 @@
 	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
 	font-size: 14px;
 	color: #fff;
-	width: 95%;
+	width: 100%;
 	padding: 0px;
 	height: auto;
 }
@@ -12,13 +12,36 @@
 .materialImage {
 	width: 25px;
 	text-align: center;
+	display: inline-block;
 }
 
 .materialQuantity {
 	width: 30px;
 	text-align: center;
+	display: inline-block;
 }
 
 .materialName {
 	width: auto;
+	display: inline-block;
+	cursor: default;
+}
+
+.nestedMaterialName {
+	width: auto;
+	display: inline-block;
+	color: #999;
+	cursor: default;
+}
+
+.nestedMaterialName:hover {
+	color: #fff;
+}
+
+.nestedTable {
+	font-size: 10px!important;
+}
+
+.hidden {
+	display: none;
 }
