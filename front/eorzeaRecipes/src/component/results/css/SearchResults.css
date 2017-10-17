@@ -34,7 +34,7 @@
 	font-size: 18px;
 	color: #fff;
 	display: inline-block;
-	width: 80%;
+	width: 75%;
 	min-width: 300px;
 }
 
@@ -60,6 +60,10 @@
 
 .itemOperation:hover{
 	background-color: #999;
+}
+
+.itemDetails{
+
 }
 
 .craftContainer {
