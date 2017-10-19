@@ -1543,9 +1543,54 @@ if(false) {
 
 
 class MaterialsTree extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+
+	updateMats(item_name, quantity, mats_array, operation) {
+		if (this.props.nested) {
+			this.props.updateMats(this.props.recipeTree.name, this.props.recipeTree.quantity, this.props.recipeTree.desiredMats, false);
+		}
+		//true to use submats. false to remove submats.
+		if (operation) {
+			delete this.props.recipeTree.desiredMats[item_name];
+			for (var key in mats_array) {
+				if (this.props.recipeTree.desiredMats[key] != null) {
+					this.props.recipeTree.desiredMats[key] += quantity * mats_array[key];
+				} else this.props.recipeTree.desiredMats[key] = quantity * mats_array[key];
+			}
+			console.log(this.props.recipeTree["desiredMats"]);
+		} else {
+			for (var key in mats_array) {
+				if (this.props.recipeTree.desiredMats[key] != null) {
+					if (this.props.recipeTree.desiredMats[key] == quantity) delete this.props.recipeTree.desiredMats[key];else {
+						this.props.recipeTree.desiredMats[key] -= quantity * mats_array[key];
+						if (this.props.recipeTree.desiredMats[key] <= 0) delete this.props.recipeTree.desiredMats[key];
+					}
+				} else console.log("deleting nothing ERROR");
+			}
+			this.props.recipeTree.desiredMats[item_name] = quantity;
+			console.log(this.props.recipeTree.desiredMats);
+		}
+
+		if (this.props.nested) {
+			this.props.updateMats(this.props.recipeTree.name, this.props.recipeTree.quantity, this.props.recipeTree.desiredMats, true);
+		}
+	}
+
+	componentDidMount() {
+		this.props.recipeTree["desiredMats"] = {};
+		//load the direct tree
+		this.props.recipeTree.tree.map(material => {
+			//			var obj = {};
+			//			obj[material.name] = material.quantity;
+			this.props.recipeTree.desiredMats[material.name] = material.quantity;
+		});
+		this.props.recipeTree["quantity"] = this.props.quantity;
+		console.log("mounting materials");
+		console.log(this.props.recipeTree);
+	}
+
 	render() {
 		var mats = this.props.recipeTree.tree.map(material => {
-			return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialItem__["a" /* default */], { item: material, key: material.id });
+			return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialItem__["a" /* default */], { item: material, updateMats: this.updateMats.bind(this), key: material.id });
 		});
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'table',
@@ -21875,13 +21920,23 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 		}
 
 		var matsCopy = Object.assign({}, this.state).cartMats;
-		item.tree.map(material => {
-			if (this.state.cartMats[material.name] != null) {
-				matsCopy[material.name] += material.quantity;
+		console.log(item);
+		/*item.tree.map((material) =>{
+  	if (this.state.cartMats[material.name]!= null)
+  	{
+  		matsCopy[material.name] += material.quantity;
+  	}
+  	else {
+  		matsCopy[material.name] = material.quantity;
+  	}
+  });*/
+		for (var key in item.desiredMats) {
+			if (this.state.cartMats[key] != null) {
+				matsCopy[key] += item.desiredMats[key];
 			} else {
-				matsCopy[material.name] = material.quantity;
+				matsCopy[key] = item.desiredMats[key];
 			}
-		});
+		}
 		if (itemIndex < 0) {
 			item.quantity = 1;
 			this.setState({
@@ -22272,7 +22327,7 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, "html {\r\n\tfont-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \r\n\tcolor: #fff;\r\n\tpadding: 0px;\r\n\tmargin: 0px;\r\n\tbackground-color: #222;\r\n}\r\n\r\n.index__app___1DXQk {\r\n\twidth: 90%;\r\n\tmin-width: 800px;\r\n\theight: 95vh;\r\n\tbackground-color: #444;\r\n\tmargin-left: auto;\r\n\tmargin-right: auto;\r\n\tmargin-top: 0px;\r\n}\r\n\r\n.index__resultsContainer___2CID9 {\r\n\twidth: 62%;\r\n\tmin-width: 550px;\r\n\tmax-width: 930px;\r\n\tposition: fixed;\r\n\tpadding-right: 5px;\r\n}\r\n", ""]);
+exports.push([module.i, "html {\r\n\t/*font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; */\r\n\tcolor: #fff;\r\n\tpadding: 0px;\r\n\tmargin: 0px;\r\n\tbackground-color: #222;\r\n}\r\n\r\n.index__app___1DXQk {\r\n\twidth: 90%;\r\n\tmin-width: 800px;\r\n\theight: 95vh;\r\n\tbackground-color: #444;\r\n\tmargin-left: auto;\r\n\tmargin-right: auto;\r\n\tmargin-top: 0px;\r\n}\r\n\r\n.index__resultsContainer___2CID9 {\r\n\twidth: 62%;\r\n\tmin-width: 550px;\r\n\tmax-width: 930px;\r\n\tposition: fixed;\r\n\tpadding-right: 5px;\r\n\tfloat: right;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
@@ -22330,13 +22385,20 @@ class SelectedResults extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
 
 class SelectedItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
-
 	addToList() {
 		this.props.addToCart(this.props.item);
 	}
 
 	deleteThis() {
 		this.props.deleteFromResults(this.props.item);
+	}
+
+	getSelectedMaterials(item_name, submat_array) {
+		//console.log(this.props.item);
+	}
+
+	componentDidUpdate() {
+		console.log("component updated");
 	}
 
 	render() {
@@ -22399,7 +22461,7 @@ class SelectedItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 								'td',
 								{ className: __WEBPACK_IMPORTED_MODULE_1__css_SearchResults_css___default.a.materialsContainer },
-								__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__materials_MaterialsTree__["a" /* default */], { recipeTree: this.props.item })
+								__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__materials_MaterialsTree__["a" /* default */], { nested: false, quantity: 1, changeSelectedMaterials: this.getSelectedMaterials.bind(this), recipeTree: this.props.item })
 							)
 						)
 					)
@@ -22448,11 +22510,12 @@ exports = module.exports = __webpack_require__(4)(undefined);
 
 
 // module
-exports.push([module.i, ".Materials__materialsTable___3uxx4 {\r\n\tpadding-top: 0px;\r\n\tmargin-top: 0px;\r\n\tfont-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;\r\n\tfont-size: 14px;\r\n\tcolor: #fff;\r\n\twidth: 100%;\r\n\tpadding: 0px;\r\n\theight: auto;\r\n}\r\n\r\n.Materials__materialImage___3y1qJ {\r\n\twidth: 25px;\r\n\ttext-align: center;\r\n\tdisplay: inline-block;\r\n}\r\n\r\n.Materials__materialQuantity___VjBPR {\r\n\twidth: 30px;\r\n\ttext-align: center;\r\n\tdisplay: inline-block;\r\n}\r\n\r\n.Materials__materialName___1A5Xt {\r\n\twidth: auto;\r\n\tdisplay: inline-block;\r\n\tcursor: default;\r\n}\r\n\r\n.Materials__nestedMaterialName___3wm3S {\r\n\twidth: auto;\r\n\tdisplay: inline-block;\r\n\tcolor: #999;\r\n\tcursor: default;\r\n}\r\n\r\n.Materials__nestedMaterialName___3wm3S:hover {\r\n\tcolor: #fff;\r\n}\r\n\r\n.Materials__nestedTable___1qVhr {\r\n\tfont-size: 10px!important;\r\n}\r\n\r\n.Materials__hidden___2HOyV {\r\n\tdisplay: none;\r\n}\r\n", ""]);
+exports.push([module.i, "p {\r\n\tmargin: 0px;\r\n\tpadding: 0px;\r\n}\r\n\r\n.Materials__materialsTable___3uxx4 {\r\n\tpadding-top: 0px;\r\n\tmargin-top: 0px;\r\n\tfont-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;\r\n\tfont-size: 14px;\r\n\tcolor: #fff;\r\n\twidth: 100%;\r\n\tpadding: 0px;\r\n\theight: auto;\r\n}\r\n\r\n.Materials__subMatCheckbox___2O_2F {\r\n\tdisplay: inline-block;\r\n\twidth: 25px;\r\n\ttext-align: center;\r\n\t\r\n}\r\n\r\n.Materials__materialImage___3y1qJ {\r\n\twidth: 25px;\r\n\ttext-align: center;\r\n\tdisplay: inline-block;\r\n}\r\n\r\n.Materials__materialQuantity___VjBPR {\r\n\twidth: 30px;\r\n\ttext-align: center;\r\n\tdisplay: inline-block;\r\n}\r\n\r\n.Materials__materialName___1A5Xt {\r\n\twidth: auto;\r\n\tdisplay: inline-block;\r\n\tcursor: default;\r\n}\r\n\r\n.Materials__nestedMaterialName___3wm3S {\r\n\twidth: auto;\r\n\tdisplay: inline-block;\r\n\tcolor: #999;\r\n\tcursor: default;\r\n}\r\n\r\n.Materials__nestedMaterialName___3wm3S:hover {\r\n\tcolor: #fff;\r\n}\r\n\r\n.Materials__nestedTable___1qVhr {\r\n\tfont-size: 10px!important;\r\n}\r\n\r\n.Materials__hidden___2HOyV {\r\n\tdisplay: none;\r\n}\r\n", ""]);
 
 // exports
 exports.locals = {
 	"materialsTable": "Materials__materialsTable___3uxx4",
+	"subMatCheckbox": "Materials__subMatCheckbox___2O_2F",
 	"materialImage": "Materials__materialImage___3y1qJ",
 	"materialQuantity": "Materials__materialQuantity___VjBPR",
 	"materialName": "Materials__materialName___1A5Xt",
@@ -22506,15 +22569,18 @@ class MaterialItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 		});
 	}
 
-	toggleNested() {
-		console.log("toggling nested");
+	updateSubmaterials(evt) {
+		this.props.updateMats(this.props.item.name, this.props.item.quantity, this.state.recipeTree.desiredMats, evt.target.checked);
+	}
+
+	toggleNested(evt) {
+		evt.stopPropagation();
 		this.setState({
 			showNested: !this.state.showNested
 		});
 	}
 
 	componentDidMount() {
-		console.log("mounting material");
 		var query = this.props.item.url_api;
 		this.doSearch(query);
 	}
@@ -22522,30 +22588,42 @@ class MaterialItem extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 	render() {
 		var nestedTable = null;
 		if (this.state.nestedMaterial) {
-			console.log("loading");
-			nestedTable = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialsTree__["a" /* default */], { recipeTree: this.state.recipeTree });
+			nestedTable = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MaterialsTree__["a" /* default */], { nested: true, quantity: this.props.item.quantity, updateMats: this.props.updateMats.bind(this), recipeTree: this.state.recipeTree });
 		}
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			'tr',
 			null,
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				'div',
-				{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialImage },
-				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { src: this.props.item.icon })
-			),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				'div',
-				{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialQuantity },
-				this.props.item.quantity
-			),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				'div',
-				{ className: this.state.nestedMaterial ? __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.nestedMaterialName : __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialName, onClick: this.toggleNested.bind(this) },
-				this.props.item.name,
-				this.state.nestedMaterial && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				'td',
+				null,
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					'div',
-					{ className: this.state.showNested ? __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.nestedTable : __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.hidden },
-					nestedTable
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialImage },
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { src: this.props.item.icon })
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialQuantity },
+					this.props.item.quantity
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.subMatCheckbox },
+					this.state.nestedMaterial && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'checkbox', onChange: this.updateSubmaterials.bind(this) })
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					'div',
+					{ className: this.state.nestedMaterial ? __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.nestedMaterialName : __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.materialName },
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						'p',
+						{ onClick: this.toggleNested.bind(this) },
+						this.props.item.name
+					),
+					this.state.nestedMaterial && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						'div',
+						{ className: this.state.showNested ? __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.nestedTable : __WEBPACK_IMPORTED_MODULE_1__css_Materials_css___default.a.hidden },
+						nestedTable
+					)
 				)
 			)
 		);

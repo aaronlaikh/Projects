@@ -4,13 +4,20 @@ import MaterialsTree from './materials/MaterialsTree';
 import CrafterInfo from './CrafterInfo';
 
 class SelectedItem extends Component {
-
 	addToList(){
 		this.props.addToCart(this.props.item);
 	}
 
 	deleteThis(){
 		this.props.deleteFromResults(this.props.item);
+	}
+
+	getSelectedMaterials(item_name, submat_array){
+		//console.log(this.props.item);
+	}
+
+	componentDidUpdate(){
+		console.log("component updated");
 	}
 
 	render(){
@@ -39,7 +46,7 @@ class SelectedItem extends Component {
 						<CrafterInfo item={this.props.item}/>
 						</td>
 						<td className={styles.materialsContainer}>
-						<MaterialsTree recipeTree={this.props.item}/>
+						<MaterialsTree nested={false} quantity={1} changeSelectedMaterials={this.getSelectedMaterials.bind(this)} recipeTree={this.props.item}/>
 						</td>
 					</tr>
 					</tbody>
