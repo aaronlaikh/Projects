@@ -1,3 +1,8 @@
+p {
+	margin: 0px;
+	padding: 0px;
+}
+
 .materialsTable {
 	padding-top: 0px;
 	margin-top: 0px;
@@ -7,6 +12,13 @@
 	width: 100%;
 	padding: 0px;
 	height: auto;
+}
+
+.subMatCheckbox {
+	display: inline-block;
+	width: 25px;
+	text-align: center;
+	
 }
 
 .materialImage {

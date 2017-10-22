@@ -60,7 +60,8 @@ class App extends Component {
 		}
 
 		var matsCopy=Object.assign({}, this.state).cartMats;
-		item.tree.map((material) =>{
+		console.log(item);
+		/*item.tree.map((material) =>{
 			if (this.state.cartMats[material.name]!= null)
 			{
 				matsCopy[material.name] += material.quantity;
@@ -68,7 +69,17 @@ class App extends Component {
 			else {
 				matsCopy[material.name] = material.quantity;
 			}
-		});
+		});*/
+		for (var key in item.desiredMats)
+		{
+			if (this.state.cartMats[key]!= null)
+			{
+				matsCopy[key] += item.desiredMats[key];
+			}
+			else {
+				matsCopy[key] = item.desiredMats[key];
+			}
+		}
 		if (itemIndex < 0){
 			item.quantity = 1;
 			this.setState({
