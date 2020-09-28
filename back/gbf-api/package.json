@@ -1,0 +1,13 @@
+{
+	"name": "gbf-api",
+	"description": "basic granblue fantasy API",
+	"version": "0.0.1",
+	"dependencies": {
+		"express": "^4.17.1",
+		"mongodb": "^3.6.2",
+		"mongoose": "^5.10.7"
+	},
+	"engines": {
+		"node": "12.x"
+	}
+}
